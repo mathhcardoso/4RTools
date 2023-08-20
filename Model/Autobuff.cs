@@ -5,6 +5,13 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using _4RTools.Utils;
+using System.Drawing;
+using Patagames.Ocr.Enums;
+using Patagames.Ocr;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Data;
 
 namespace _4RTools.Model
 {
@@ -28,17 +35,199 @@ namespace _4RTools.Model
             }
         }
 
+        private Bitmap GrayScale(Bitmap Bmp)
+        {
+            int rgb;
+            int threshold = 160;
+            Color c;
+
+            for (int y = 0; y < Bmp.Height; y++)
+                for (int x = 0; x < Bmp.Width; x++)
+                {
+                    c = Bmp.GetPixel(x, y);
+                    rgb = (int)((c.R + c.G + c.B) / 3) > threshold ? 255 : 0;
+                    Bmp.SetPixel(x, y, Color.FromArgb(rgb, rgb, rgb));
+                }
+            return Bmp;
+        }
+
+        private void PressKey(string key)
+        {
+            Interop.PostMessage(ClientSingleton.GetClient().process.MainWindowHandle, Constants.WM_KEYDOWN_MSG_ID, (Keys)Enum.Parse(typeof(Keys), key), 0);
+        }
+
+        private void ReleaseKey(string key)
+        {
+            Interop.PostMessage(ClientSingleton.GetClient().process.MainWindowHandle, Constants.WM_KEYUP_MSG_ID, (Keys)Enum.Parse(typeof(Keys), key), 0);
+        }
+
+        private void CreateDirectory(string path)
+        {
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            DeleteFiles(path);
+        }
+
+        private void DeleteFiles(string path)
+        {
+            string[] files = Directory.GetFiles(path);
+            foreach (string file in files)
+            {
+                FileInfo fi = new FileInfo(file);
+                if (fi.LastAccessTime < DateTime.Now.AddDays(-2))
+                    fi.Delete();
+            }
+        }
+
+        private void StoreItem()
+        {
+            // Hold Left Alt
+            Interop.keybd_event(Constants.VK_MENU, Constants.KEYEVENTF_EXTENDEDKEY, 0, 0);
+            Thread.Sleep(1);
+
+            // Open Storage
+            PressKey("D5");
+
+            // Open Inventory
+            PressKey("E");
+            Thread.Sleep(200);
+
+            // Right Click
+            for (int i = 0; i < 10; i++)
+            {
+                Interop.PostMessage(ClientSingleton.GetClient().process.MainWindowHandle, Constants.WM_RBUTTONDOWN, 0, 0);
+                Thread.Sleep(10);
+                Interop.PostMessage(ClientSingleton.GetClient().process.MainWindowHandle, Constants.WM_RBUTTONUP, 0, 0);
+                Thread.Sleep(10);
+            }
+
+            // Close Inventory
+            PressKey("E");
+            Thread.Sleep(100);
+
+            // Release Left Alt
+            Interop.keybd_event(Constants.VK_MENU, 0, Constants.KEYEVENTF_KEYUP, 0);
+            Thread.Sleep(100);
+        }
+
+        private void TakeScreenShot(string imagePath)
+        {
+            // Take a ScreenShot
+            Bitmap bitmap = new Bitmap(230, 130);
+            Graphics graphics = Graphics.FromImage(bitmap as Image);
+            IntPtr dc = graphics.GetHdc();
+            bool success = Interop.PrintWindow(ClientSingleton.GetClient().process.MainWindowHandle, dc, 0);
+            graphics.ReleaseHdc(dc);
+
+            // Resize image and transform to grayScale and save
+            Size size = new Size(499, 499);
+            Image image = GrayScale(new Bitmap(bitmap, size));
+            image.Save(imagePath, ImageFormat.Jpeg);
+        }
+
+        private string ExtractTextFromImage(string imagePath)
+        {
+            var api = OcrApi.Create();
+            api.Init(Languages.English);
+            string plainText = api.GetTextFromImage(imagePath);
+            return plainText;
+        }
+
+        private void AnswerAntiBot(string code)
+        {
+            // Type requested numbers
+            foreach (char number in code)
+            {
+                PressKey("D" + number.ToString());
+                Thread.Sleep(200);
+            }
+
+            // Press Enter twice
+            Thread.Sleep(150);
+            PressKey("Enter");
+            Thread.Sleep(150);
+            PressKey("Enter");
+            Thread.Sleep(150);
+        }
+
         public _4RThread AutoBuffThread(Client c)
         {
             _4RThread autobuffItemThread = new _4RThread(_ =>
             {
 
                 bool foundQuag = false;
+                bool foundAntiBot = false;
                 Dictionary<EffectStatusIDs, Key> bmClone = new Dictionary<EffectStatusIDs, Key>(this.buffMapping);
                 for (int i = 0; i < Constants.MAX_BUFF_LIST_INDEX_SIZE; i++)
                 {
                     uint currentStatus = c.CurrentBuffStatusCode(i);
                     EffectStatusIDs status = (EffectStatusIDs)currentStatus;
+
+                    // Anti bot
+                    if (status == EffectStatusIDs.ENDURE)
+                    {
+                        foundAntiBot = true;
+                        string dateNow = DateTime.Now.ToString("yyyy-MMMM-ddTHH-mm-ss");
+                        string today = DateTime.Now.ToString("yyyy-MMMM-dd");
+                        string imagesDir = "images";
+                        string imagePath = imagesDir + @"\4RTools_AntiBotCode_" + dateNow + ".jpg";
+                        string logsDir = "logs";
+                        string logFilePath = logsDir + @"\4RTools_Logs_" + today + ".txt";
+
+                        // Stop MacroSwitch
+                        ProfileSingleton.GetCurrent().MacroSwitch.Stop();
+                        Thread.Sleep(500);
+
+                        // Create images directory
+                        CreateDirectory(imagesDir);
+
+                        // Create logs directory
+                        CreateDirectory(logsDir);
+
+                        // Create/Open Log file
+                        FileStream fs = new FileStream(logFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                        StreamReader sr = new StreamReader(fs);
+                        string oldContent = sr.ReadToEnd();
+                        fs.Seek(0, SeekOrigin.Begin);
+
+                        // Delete possible wrong typed numbers
+                        for (int j = 0; j < 10; j++)
+                        {
+                            PressKey("Delete");
+                            PressKey("Back");
+                        }
+
+                        // Antibot chat should be positioned on the Basic Info card
+                        TakeScreenShot(imagePath);
+
+                        // Extract text from saved image
+                        string plainText = ExtractTextFromImage(imagePath);
+                        string code = plainText.Split(',').Last().Split('.').Last().Trim();
+                        int lenCode = code.Length;
+                        string justNumbers = new String(code.Where(Char.IsDigit).ToArray());
+                        int lenJustNumbers = justNumbers.Length;
+
+                        // Write log
+                        using (StreamWriter sw = new StreamWriter(fs))
+                        {
+                            sw.WriteLine($"{dateNow}\n->{imagePath}\n->{plainText}\n->'{code}' ({lenCode})\n->'{justNumbers}' ({lenJustNumbers})\n\n");
+                            sw.Write(oldContent);
+                        }
+
+                        if (plainText.Contains("tentativas"))
+                            AnswerAntiBot(justNumbers);
+
+                        // Start MacroSwitch
+                        ProfileSingleton.GetCurrent().MacroSwitch.Start();
+                        ReleaseKey("F3");
+                        ReleaseKey("D3");
+                        foundAntiBot = false;
+                    }
+
+                    // Is 50% Overweight
+                    if (status == EffectStatusIDs.OVERWEIGHT_90 && !foundAntiBot)
+                        StoreItem();
 
                     if (status == EffectStatusIDs.OVERTHRUSTMAX)
                     {

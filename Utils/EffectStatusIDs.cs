@@ -168,5 +168,9 @@ namespace _4RTools.Utils
 
         TELEKINESIS_INTENSE = 717,
         MYST_AMPLIFY = 113,
+
+        //Weight
+        OVERWEIGHT_50 = 35,
+        OVERWEIGHT_90 = 36,
     }
 }
