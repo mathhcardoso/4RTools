@@ -203,7 +203,7 @@ namespace _4RTools.Model
 
                         // Extract text from saved image
                         string plainText = ExtractTextFromImage(imagePath);
-                        string code = plainText.Split(',').Last().Split('.').Last().Trim();
+                        string code = plainText.Split(':').Last().Trim();
                         int lenCode = code.Length;
                         string justNumbers = new String(code.Where(Char.IsDigit).ToArray());
                         int lenJustNumbers = justNumbers.Length;
@@ -215,7 +215,7 @@ namespace _4RTools.Model
                             sw.Write(oldContent);
                         }
 
-                        if (plainText.Contains("tentativas"))
+                        if (plainText.Contains("!"))
                             AnswerAntiBot(justNumbers);
 
                         // Start MacroSwitch
@@ -225,7 +225,7 @@ namespace _4RTools.Model
                         foundAntiBot = false;
                     }
 
-                    // Is 50% Overweight
+                    // Is 90% Overweight
                     if (status == EffectStatusIDs.OVERWEIGHT_90 && !foundAntiBot)
                         StoreItem();
 
