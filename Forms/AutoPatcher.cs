@@ -40,31 +40,31 @@ namespace _4RTools.Forms
             //List[1] = Url
             try
             {
-                //String oldFileName = "4RTools_old.exe";
-                //String sourceFileName = "4RTools.exe";
-                //File.Delete(oldFileName); //Delete old 4RTools
+                String oldFileName = "4RTools_old.exe";
+                String sourceFileName = "4RTools.exe";
+                File.Delete(oldFileName); //Delete old 4RTools
                 //Fetch Github latest Tag
-                //client.Timeout = TimeSpan.FromSeconds(5);
-                //client.DefaultRequestHeaders.Add("User-Agent", "request");
-                //string latestVersion = await client.GetStringAsync(AppConfig._4RLatestVersionURL);
-                //JObject obj = JsonConvert.DeserializeObject<JObject>(latestVersion);
+                client.Timeout = TimeSpan.FromSeconds(5);
+                client.DefaultRequestHeaders.Add("User-Agent", "request");
+                string latestVersion = await client.GetStringAsync(AppConfig._4RLatestVersionURL);
+                JObject obj = JsonConvert.DeserializeObject<JObject>(latestVersion);
 
-                //string tag = obj["name"].ToString(); //Tag Name
+                string tag = obj["name"].ToString(); //Tag Name
 
-                //if (tag != AppConfig.Version)
-                //{
-                    //string downloadUrl = obj["assets"][0]["browser_download_url"].ToString(); //Latest download url
-                    //string fileName = obj["assets"][0]["name"].ToString(); //Latest file name
+                if (tag != AppConfig.Version)
+                {
+                    string downloadUrl = obj["assets"][0]["browser_download_url"].ToString(); //Latest download url
+                    string fileName = obj["assets"][0]["name"].ToString(); //Latest file name
                     //If different, 4R is outdated.
                     //Need to download and update
-                    //await Download(downloadUrl, fileName); //Download the .rar file
-                    //RarArchive arch = new RarArchive(fileName);
-                    //File.Move(sourceFileName, oldFileName);
-                    //arch.ExtractToDirectory(".");
-                    //arch.Dispose();
-                    //File.Delete(fileName); //Delete .rar file downloaded
-                    //Environment.Exit(0);
-                //}
+                    await Download(downloadUrl, fileName); //Download the .rar file
+                    RarArchive arch = new RarArchive(fileName);
+                    File.Move(sourceFileName, oldFileName);
+                    arch.ExtractToDirectory(".");
+                    arch.Dispose();
+                    File.Delete(fileName); //Delete .rar file downloaded
+                    Environment.Exit(0);
+                }
 
             }
             finally
