@@ -38,7 +38,7 @@ namespace _4RTools.Model
         private Bitmap GrayScale(Bitmap Bmp)
         {
             int rgb;
-            int threshold = 160;
+            int threshold = 180;
             Color c;
 
             for (int y = 0; y < Bmp.Height; y++)
