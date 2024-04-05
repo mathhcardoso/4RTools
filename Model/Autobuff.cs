@@ -30,7 +30,7 @@ namespace _4RTools.Model
             Client roClient = ClientSingleton.GetClient();
             if (roClient != null)
             {
-                 this.thread = AutoBuffThread(roClient);
+                this.thread = AutoBuffThread(roClient);
                 _4RThread.Start(this.thread);
             }
         }
@@ -51,6 +51,27 @@ namespace _4RTools.Model
             return Bmp;
         }
 
+        private Tuple<int, int> Move_mouse(int to_x, int to_y)
+        {
+            int screenWidth = Interop.InternalGetSystemMetrics(0);
+            int screenHeight = Interop.InternalGetSystemMetrics(1);
+
+            int mic_x = (int)Math.Round(to_x * 65536.0 / screenWidth);
+            int mic_y = (int)Math.Round(to_y * 65536.0 / screenHeight);
+
+            Interop.mouse_event(Constants.KEYEVENTF_EXTENDEDKEY | Constants.MOUSEEVENTF_ABSOLUTE, mic_x, mic_y, 0, 0);
+            return new Tuple<int, int>(mic_x, mic_y);
+        }
+
+        private void Click_mouse(int x, int y)
+        {
+            (int new_x, int new_y) = Move_mouse(x, y);
+            Thread.Sleep(10);
+            Interop.mouse_event(Constants.MOUSEEVENTF_LEFTDOWN, new_x, new_y, 0, 0);
+            Thread.Sleep(1);
+            Interop.mouse_event(Constants.MOUSEEVENTF_LEFTUP, new_x, new_y, 0, 0);
+        }
+
         private void PressKey(string key)
         {
             Interop.PostMessage(ClientSingleton.GetClient().process.MainWindowHandle, Constants.WM_KEYDOWN_MSG_ID, (Keys)Enum.Parse(typeof(Keys), key), 0);
@@ -59,6 +80,44 @@ namespace _4RTools.Model
         private void ReleaseKey(string key)
         {
             Interop.PostMessage(ClientSingleton.GetClient().process.MainWindowHandle, Constants.WM_KEYUP_MSG_ID, (Keys)Enum.Parse(typeof(Keys), key), 0);
+        }
+
+        private void UseAltShortCut(string key)
+        {
+            // Hold Left Alt
+            Interop.keybd_event(Constants.VK_MENU, Constants.KEYEVENTF_EXTENDEDKEY, 0, 0);
+            Thread.Sleep(1);
+
+            PressKey(key);
+            Thread.Sleep(200);
+
+            // Release Left Alt
+            Interop.keybd_event(Constants.VK_MENU, 0, Constants.KEYEVENTF_KEYUP, 0);
+            Thread.Sleep(100);
+        }
+
+        private void Relog()
+        {
+            int optionPosDiff = 155;
+            // Open options
+            PressKey("Escape");
+
+            Point cursorPos = System.Windows.Forms.Cursor.Position;
+            int to_x = cursorPos.X;
+            int to_y = cursorPos.Y + optionPosDiff;
+            Thread.Sleep(10000);
+            
+            // Click on "Select Character" option
+            Click_mouse(to_x, to_y);
+
+            Thread.Sleep(2000);
+
+            // Select character
+            PressKey("Enter");
+            Thread.Sleep(2000);
+
+            // Move mouse to original position
+            Click_mouse(to_x, to_y - optionPosDiff);
         }
 
         private void CreateDirectory(string path)
@@ -151,6 +210,79 @@ namespace _4RTools.Model
             Thread.Sleep(150);
         }
 
+        private void HandleAntiBot()
+        {
+            string dateNow = DateTime.Now.ToString("yyyy-MMMM-ddTHH-mm-ss");
+            string today = DateTime.Now.ToString("yyyy-MMMM-dd");
+            string imagesDir = "images";
+            string imagePath = imagesDir + @"\4RTools_AntiBotCode_" + dateNow + ".jpg";
+            string logsDir = "logs";
+            string logFilePath = logsDir + @"\4RTools_Logs_" + today + ".txt";
+
+            // Stop MacroSwitch
+            ProfileSingleton.GetCurrent().MacroSwitch.Stop();
+            Thread.Sleep(500);
+
+            // Create images directory
+            CreateDirectory(imagesDir);
+
+            // Create logs directory
+            CreateDirectory(logsDir);
+
+            // Create/Open Log file
+            FileStream fs = new FileStream(logFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            StreamReader sr = new StreamReader(fs);
+            string oldContent = sr.ReadToEnd();
+            fs.Seek(0, SeekOrigin.Begin);
+
+            // Delete possible wrong typed numbers
+            for (int j = 0; j < 10; j++)
+            {
+                PressKey("Delete");
+                PressKey("Back");
+            }
+
+            // Antibot chat should be positioned on the Basic Info card
+            TakeScreenShot(imagePath);
+
+            // Extract text from saved image
+            string plainText = ExtractTextFromImage(imagePath);
+            string code = plainText.Split(':').Last().Trim();
+            int lenCode = code.Length;
+            string justNumbers = new String(code.Where(Char.IsDigit).ToArray());
+            int lenJustNumbers = justNumbers.Length;
+
+            // Write log
+            using (StreamWriter sw = new StreamWriter(fs))
+            {
+                sw.WriteLine($"{dateNow}\n->{imagePath}\n->{plainText}\n->'{code}' ({lenCode})\n->'{justNumbers}' ({lenJustNumbers})\n\n");
+                sw.Write(oldContent);
+            }
+
+            // Response is correct, but the game doesnt leave the player
+            if (plainText.Contains("%"))
+            {
+                // Relog
+                Relog();
+
+                // Turn on auto loot
+                UseAltShortCut("D8");
+
+            }
+            else if (plainText.Contains("!"))
+                AnswerAntiBot(justNumbers);
+
+            // Release F3 e D3
+            for (int j = 0; j < 3; j++)
+            {
+                ReleaseKey("F3");
+                ReleaseKey("D3");
+            }
+
+            // Start MacroSwitch
+            ProfileSingleton.GetCurrent().MacroSwitch.Start();
+        }
+
         public _4RThread AutoBuffThread(Client c)
         {
             _4RThread autobuffItemThread = new _4RThread(_ =>
@@ -168,60 +300,7 @@ namespace _4RTools.Model
                     if (status == EffectStatusIDs.ENDURE)
                     {
                         foundAntiBot = true;
-                        string dateNow = DateTime.Now.ToString("yyyy-MMMM-ddTHH-mm-ss");
-                        string today = DateTime.Now.ToString("yyyy-MMMM-dd");
-                        string imagesDir = "images";
-                        string imagePath = imagesDir + @"\4RTools_AntiBotCode_" + dateNow + ".jpg";
-                        string logsDir = "logs";
-                        string logFilePath = logsDir + @"\4RTools_Logs_" + today + ".txt";
-
-                        // Stop MacroSwitch
-                        ProfileSingleton.GetCurrent().MacroSwitch.Stop();
-                        Thread.Sleep(500);
-
-                        // Create images directory
-                        CreateDirectory(imagesDir);
-
-                        // Create logs directory
-                        CreateDirectory(logsDir);
-
-                        // Create/Open Log file
-                        FileStream fs = new FileStream(logFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-                        StreamReader sr = new StreamReader(fs);
-                        string oldContent = sr.ReadToEnd();
-                        fs.Seek(0, SeekOrigin.Begin);
-
-                        // Delete possible wrong typed numbers
-                        for (int j = 0; j < 10; j++)
-                        {
-                            PressKey("Delete");
-                            PressKey("Back");
-                        }
-
-                        // Antibot chat should be positioned on the Basic Info card
-                        TakeScreenShot(imagePath);
-
-                        // Extract text from saved image
-                        string plainText = ExtractTextFromImage(imagePath);
-                        string code = plainText.Split(':').Last().Trim();
-                        int lenCode = code.Length;
-                        string justNumbers = new String(code.Where(Char.IsDigit).ToArray());
-                        int lenJustNumbers = justNumbers.Length;
-
-                        // Write log
-                        using (StreamWriter sw = new StreamWriter(fs))
-                        {
-                            sw.WriteLine($"{dateNow}\n->{imagePath}\n->{plainText}\n->'{code}' ({lenCode})\n->'{justNumbers}' ({lenJustNumbers})\n\n");
-                            sw.Write(oldContent);
-                        }
-
-                        if (plainText.Contains("!"))
-                            AnswerAntiBot(justNumbers);
-
-                        // Start MacroSwitch
-                        ProfileSingleton.GetCurrent().MacroSwitch.Start();
-                        ReleaseKey("F3");
-                        ReleaseKey("D3");
+                        HandleAntiBot();
                         foundAntiBot = false;
                     }
 

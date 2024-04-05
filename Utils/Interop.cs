@@ -23,5 +23,8 @@ namespace _4RTools.Utils
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool PrintWindow(IntPtr hwnd, IntPtr hDC, uint nFlags);
+
+        [DllImport("user32.dll", EntryPoint = "GetSystemMetrics", CallingConvention = CallingConvention.Winapi)]
+        internal static extern int InternalGetSystemMetrics(int value);
     }
 }

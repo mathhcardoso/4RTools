@@ -32,6 +32,7 @@ namespace _4RTools.Utils
         public const uint MOUSEEVENTF_LEFTUP = 0x0004;
         public const int KEYEVENTF_EXTENDEDKEY = 0x0001;
         public const int KEYEVENTF_KEYUP = 0x0002;
+        public const int MOUSEEVENTF_ABSOLUTE = 0x8000;
         public const int VK_SHIFT = 0x10;
         public const int VK_MENU = 0x12;
     }
