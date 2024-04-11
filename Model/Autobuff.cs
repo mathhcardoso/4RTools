@@ -66,7 +66,7 @@ namespace _4RTools.Model
         private void Click_mouse(int x, int y)
         {
             (int new_x, int new_y) = Move_mouse(x, y);
-            Thread.Sleep(10);
+            Thread.Sleep(100);
             Interop.mouse_event(Constants.MOUSEEVENTF_LEFTDOWN, new_x, new_y, 0, 0);
             Thread.Sleep(1);
             Interop.mouse_event(Constants.MOUSEEVENTF_LEFTUP, new_x, new_y, 0, 0);
@@ -105,7 +105,7 @@ namespace _4RTools.Model
             Point cursorPos = System.Windows.Forms.Cursor.Position;
             int to_x = cursorPos.X;
             int to_y = cursorPos.Y + optionPosDiff;
-            Thread.Sleep(10000);
+            Thread.Sleep(8000);
             
             // Click on "Select Character" option
             Click_mouse(to_x, to_y);
@@ -220,8 +220,20 @@ namespace _4RTools.Model
             string logFilePath = logsDir + @"\4RTools_Logs_" + today + ".txt";
 
             // Stop MacroSwitch
+            ProfileSingleton.GetCurrent().AHK.Stop();
+
+            // Stop 4RTools
             ProfileSingleton.GetCurrent().MacroSwitch.Stop();
+
             Thread.Sleep(500);
+
+            // Release F3 e D3
+            ReleaseKey("F3");
+            ReleaseKey("D3");
+
+            // Click mouse para soltar da skill
+            Point cursorPos = System.Windows.Forms.Cursor.Position;
+            Click_mouse(cursorPos.X, cursorPos.Y);
 
             // Create images directory
             CreateDirectory(imagesDir);
@@ -282,18 +294,13 @@ namespace _4RTools.Model
                 Relog();
             }
 
-            // Release F3 e D3
-            for (int j = 0; j < 10; j++)
-            {
-                ReleaseKey("F3");
-                ReleaseKey("D3");
-            }
-
             // Turn on auto loot
             UseAltShortCut("D8");
 
             // Start MacroSwitch
             ProfileSingleton.GetCurrent().MacroSwitch.Start();
+            // Start 4RTools
+            ProfileSingleton.GetCurrent().AHK.Start();
         }
 
         public _4RThread AutoBuffThread(Client c)
