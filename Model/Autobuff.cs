@@ -173,7 +173,7 @@ namespace _4RTools.Model
         private void TakeScreenShot(string imagePath)
         {
             // Take a ScreenShot
-            Bitmap bitmap = new Bitmap(230, 130);
+            Bitmap bitmap = new Bitmap(200, 200);
             Graphics graphics = Graphics.FromImage(bitmap as Image);
             IntPtr dc = graphics.GetHdc();
             bool success = Interop.PrintWindow(ClientSingleton.GetClient().process.MainWindowHandle, dc, 0);
@@ -242,6 +242,16 @@ namespace _4RTools.Model
                 PressKey("Back");
             }
 
+            Thread.Sleep(2000);
+
+            // Scrool down antibot box
+            for (int j = 0; j < 10; j++)
+            {
+                PressKey("Down");
+            }
+
+            Thread.Sleep(2000);
+
             // Antibot chat should be positioned on the Basic Info card
             TakeScreenShot(imagePath);
 
@@ -262,22 +272,25 @@ namespace _4RTools.Model
             // Response is correct, but the game doesnt leave the player
             if (plainText.Contains("%"))
             {
-                // Relog
                 Relog();
-
-                // Turn on auto loot
-                UseAltShortCut("D8");
-
             }
             else if (plainText.Contains("!"))
+            {
                 AnswerAntiBot(justNumbers);
+            } else
+            {
+                Relog();
+            }
 
             // Release F3 e D3
-            for (int j = 0; j < 3; j++)
+            for (int j = 0; j < 10; j++)
             {
                 ReleaseKey("F3");
                 ReleaseKey("D3");
             }
+
+            // Turn on auto loot
+            UseAltShortCut("D8");
 
             // Start MacroSwitch
             ProfileSingleton.GetCurrent().MacroSwitch.Start();

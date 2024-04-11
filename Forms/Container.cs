@@ -82,7 +82,8 @@ namespace _4RTools.Forms
             this.refreshProcessList();
             this.refreshProfileList();
             this.profileCB.SelectedItem = "Default";
-            this.processCB.SelectedIndex = 0; // select the first found ro client
+            if (this.processCB.Items.Count > 0)
+                this.processCB.SelectedIndex = 0; // select the first found ro client
         }
 
         public void refreshProfileList()
