@@ -282,25 +282,43 @@ namespace _4RTools.Model
             }
 
             // Response is correct, but the game doesnt leave the player
-            if (plainText.Contains("%"))
+            if (plainText.Contains("Arquimago"))
             {
                 Relog();
             }
-            else if (plainText.Contains("!"))
+            else if (plainText.Contains("["))
             {
                 AnswerAntiBot(justNumbers);
-            } else
-            {
-                Relog();
             }
+            else // ERROU
+            {
+                //Relog();
+                PressKey("Escape");
+                foreach (char l in "111")
+                {
+                    PressKey(l.ToString().ToUpper());
+                    Thread.Sleep(200);
+                }
+            }
+
+
+            // Release F3 e D3
+            for (int j = 0; j < 3; j++)
+            {
+                ReleaseKey("F3");
+                ReleaseKey("D3");
+            }
+
+            // Start 4RTools
+            ProfileSingleton.GetCurrent().AHK.Start();
+            Thread.Sleep(200);
+            // Start MacroSwitch
+            ProfileSingleton.GetCurrent().MacroSwitch.Start();
+            Thread.Sleep(200);
 
             // Turn on auto loot
             UseAltShortCut("D8");
-
-            // Start MacroSwitch
-            ProfileSingleton.GetCurrent().MacroSwitch.Start();
-            // Start 4RTools
-            ProfileSingleton.GetCurrent().AHK.Start();
+            Thread.Sleep(200);
         }
 
         public _4RThread AutoBuffThread(Client c)
