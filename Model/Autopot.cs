@@ -16,8 +16,10 @@ namespace _4RTools.Model
         public static string ACTION_NAME_AUTOPOT_YGG = "AutopotYgg";
 
         public Key hpKey { get; set; }
+        public Key hpBoxKey { get; set; }
         public int hpPercent { get; set; }
         public Key spKey { get; set; }
+        public Key spBoxKey { get; set; }
         public int spPercent { get; set; }
         public int delay { get; set; } = 15;
         public int delayYgg { get; set; } = 50;
@@ -31,16 +33,18 @@ namespace _4RTools.Model
             this.actionName = actionName;
         }
 
-        public Autopot(Key hpKey, int hpPercent, int delay, Key spKey, int spPercent)
+        public Autopot(Key hpKey, Key hpBoxKey, int hpPercent, int delay, Key spKey, Key spBoxKey, int spPercent)
         {
             this.delay = delay;
 
             // HP
             this.hpKey = hpKey;
+            this.hpBoxKey = hpBoxKey;
             this.hpPercent = hpPercent;
 
             // SP
             this.spKey = spKey;
+            this.spBoxKey = spBoxKey;
             this.spPercent = spPercent;
         }
 
@@ -77,6 +81,18 @@ namespace _4RTools.Model
             if (roClient.IsSpBelow(spPercent))
             {
                 pot(this.spKey);
+            }
+
+            if (roClient.IsHpBelow(hpPercent))
+            {
+                // Use HP box
+                pot(this.hpBoxKey);
+            }
+
+            if (roClient.IsSpBelow(spPercent))
+            {
+                // Use SP box
+                pot(this.spBoxKey);
             }
 
             Thread.Sleep(this.delay);

@@ -199,10 +199,9 @@ namespace _4RTools.Model
             foreach (char number in code)
             {
                 PressKey("D" + number.ToString());
-                Thread.Sleep(200);
+                Thread.Sleep(100);
             }
 
-            // Press Enter twice
             Thread.Sleep(150);
             PressKey("Enter");
             Thread.Sleep(150);
@@ -219,17 +218,24 @@ namespace _4RTools.Model
             string logsDir = "logs";
             string logFilePath = logsDir + @"\4RTools_Logs_" + today + ".txt";
 
-            // Stop MacroSwitch
-            ProfileSingleton.GetCurrent().AHK.Stop();
+            if (ProfileSingleton.GetCurrent().AHK.isActive)
+            {
+                ProfileSingleton.GetCurrent().AHK.Stop();
+                Thread.Sleep(100);
+            }
 
-            // Stop 4RTools
-            ProfileSingleton.GetCurrent().MacroSwitch.Stop();
+            if (ProfileSingleton.GetCurrent().MacroSwitch.isActive)
+            {
+                ProfileSingleton.GetCurrent().MacroSwitch.Stop();
+                Thread.Sleep(100);
+            }
 
-            Thread.Sleep(500);
-
-            // Release F3 e D3
+            // Release F3
             ReleaseKey("F3");
-            ReleaseKey("D3");
+            Thread.Sleep(100);
+            // Release D0
+            ReleaseKey("D0");
+            Thread.Sleep(100);
 
             // Click mouse para soltar da skill
             Point cursorPos = System.Windows.Forms.Cursor.Position;
@@ -286,39 +292,49 @@ namespace _4RTools.Model
             {
                 Relog();
             }
-            else if (plainText.Contains("["))
+            else if (plainText.Contains("Anti-Bot"))
             {
                 AnswerAntiBot(justNumbers);
             }
-            else // ERROU
+            else // Answer wrong code
             {
-                //Relog();
-                PressKey("Escape");
-                foreach (char l in "111")
-                {
-                    PressKey(l.ToString().ToUpper());
-                    Thread.Sleep(200);
-                }
+                PressKey("V".ToString().ToUpper());
+                Thread.Sleep(1);
+                PressKey("E".ToString().ToUpper());
+                Thread.Sleep(1);
+                PressKey("L".ToString().ToUpper());
+                Thread.Sleep(1);
+                PressKey("H".ToString().ToUpper());
+                Thread.Sleep(1);
+                PressKey("A".ToString().ToUpper());
+                Thread.Sleep(1);
+                PressKey("D2".ToString().ToUpper());
+                Thread.Sleep(1);
+                PressKey("D2".ToString().ToUpper());
+                Thread.Sleep(1);
+
+                // Press Enter twice
+                Thread.Sleep(10000);
+                PressKey("Enter");
+                Thread.Sleep(3000);
+                PressKey("Enter");
+                Thread.Sleep(1000);
+                PressKey("Enter");
+                Thread.Sleep(1000);
+            }
+            
+            if (!ProfileSingleton.GetCurrent().AHK.isActive)
+            {
+                ProfileSingleton.GetCurrent().AHK.Start();
             }
 
-
-            // Release F3 e D3
-            for (int j = 0; j < 3; j++)
+            if (!ProfileSingleton.GetCurrent().MacroSwitch.isActive)
             {
-                ReleaseKey("F3");
-                ReleaseKey("D3");
+                ProfileSingleton.GetCurrent().MacroSwitch.Start();
             }
-
-            // Start 4RTools
-            ProfileSingleton.GetCurrent().AHK.Start();
-            Thread.Sleep(200);
-            // Start MacroSwitch
-            ProfileSingleton.GetCurrent().MacroSwitch.Start();
-            Thread.Sleep(200);
 
             // Turn on auto loot
             UseAltShortCut("D8");
-            Thread.Sleep(200);
         }
 
         public _4RThread AutoBuffThread(Client c)

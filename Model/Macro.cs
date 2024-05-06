@@ -60,6 +60,7 @@ namespace _4RTools.Model
 
         public string actionName { get; set; }
         private _4RThread thread;
+        public bool isActive { get; set; } = false;
         public List<ChainConfig> chainConfigs { get; set; } = new List<ChainConfig>();
 
         public Macro(string macroname, int macroLanes)
@@ -140,12 +141,14 @@ namespace _4RTools.Model
             {
                 this.thread = new _4RThread((_) => MacroExecutionThread(roClient));
                 _4RThread.Start(this.thread);
+                this.isActive = true;
             }
         }
 
         public void Stop()
         {
             _4RThread.Stop(this.thread);
+            this.isActive= false;
         }
     }
 }

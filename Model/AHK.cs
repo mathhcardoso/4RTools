@@ -40,6 +40,7 @@ namespace _4RTools.Model
         public int AhkDelay { get; set; } = 10;
         public bool mouseFlick { get; set; } = false;
         public bool noShift { get; set; } = false;
+        public bool isActive { get; set; } = false;
         public string ahkMode { get; set; } = COMPATIBILITY;
 
         public AHK()
@@ -57,6 +58,7 @@ namespace _4RTools.Model
 
                 this.thread = new _4RThread(_ => AHKThreadExecution(roClient));
                 _4RThread.Start(this.thread);
+                this.isActive = true;
             }
         }
 
@@ -170,6 +172,7 @@ namespace _4RTools.Model
         public void Stop()
         {
             _4RThread.Stop(this.thread);
+            this.isActive = false;
         }
 
         public string GetConfiguration()

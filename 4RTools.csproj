@@ -431,6 +431,7 @@
     <EmbeddedResource Include="Resources\4RTools\ETCResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ETCResource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="packages.config" />

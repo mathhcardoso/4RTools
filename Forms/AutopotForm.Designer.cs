@@ -38,7 +38,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txtHpKey = new System.Windows.Forms.TextBox();
+            this.txtHpBoxKey = new System.Windows.Forms.TextBox();
             this.txtSPKey = new System.Windows.Forms.TextBox();
+            this.txtSPBoxKey = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtSPpct = new System.Windows.Forms.NumericUpDown();
@@ -51,7 +53,7 @@
             // txtHPpct
             // 
             this.txtHPpct.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtHPpct.Location = new System.Drawing.Point(118, 12);
+            this.txtHPpct.Location = new System.Drawing.Point(120, 12);
             this.txtHPpct.Name = "txtHPpct";
             this.txtHPpct.Size = new System.Drawing.Size(44, 23);
             this.txtHPpct.TabIndex = 39;
@@ -89,7 +91,7 @@
             // picBoxSP
             // 
             this.picBoxSP.Image = Resources._4RTools.ETCResource.SP;
-            this.picBoxSP.Location = new System.Drawing.Point(11, 37);
+            this.picBoxSP.Location = new System.Drawing.Point(0, 37);
             this.picBoxSP.Name = "picBoxSP";
             this.picBoxSP.Size = new System.Drawing.Size(25, 25);
             this.picBoxSP.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -99,7 +101,7 @@
             // picBoxHP
             // 
             this.picBoxHP.Image = Resources._4RTools.ETCResource.HP;
-            this.picBoxHP.Location = new System.Drawing.Point(11, 11);
+            this.picBoxHP.Location = new System.Drawing.Point(0, 11);
             this.picBoxHP.Name = "picBoxHP";
             this.picBoxHP.Size = new System.Drawing.Size(25, 25);
             this.picBoxHP.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -129,23 +131,39 @@
             // txtHpKey
             // 
             this.txtHpKey.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtHpKey.Location = new System.Drawing.Point(56, 12);
+            this.txtHpKey.Location = new System.Drawing.Point(43, 12);
             this.txtHpKey.Name = "txtHpKey";
-            this.txtHpKey.Size = new System.Drawing.Size(61, 23);
+            this.txtHpKey.Size = new System.Drawing.Size(37, 23);
             this.txtHpKey.TabIndex = 43;
+            //
+            // txtHpBoxKey
             // 
+            this.txtHpBoxKey.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtHpBoxKey.Location = new System.Drawing.Point(81, 12);
+            this.txtHpBoxKey.Name = "txtHpBoxKey";
+            this.txtHpBoxKey.Size = new System.Drawing.Size(37, 23);
+            this.txtHpBoxKey.TabIndex = 44;
+            //
             // txtSPKey
             // 
             this.txtSPKey.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtSPKey.Location = new System.Drawing.Point(56, 38);
+            this.txtSPKey.Location = new System.Drawing.Point(43, 38);
             this.txtSPKey.Name = "txtSPKey";
-            this.txtSPKey.Size = new System.Drawing.Size(61, 23);
-            this.txtSPKey.TabIndex = 44;
+            this.txtSPKey.Size = new System.Drawing.Size(37, 23);
+            this.txtSPKey.TabIndex = 45;
+            //
+            // txtSPBoxKey
             // 
+            this.txtSPBoxKey.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtSPBoxKey.Location = new System.Drawing.Point(81, 38);
+            this.txtSPBoxKey.Name = "txtSPBoxKey";
+            this.txtSPBoxKey.Size = new System.Drawing.Size(37, 23);
+            this.txtSPBoxKey.TabIndex = 46;
+            //
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(34, 17);
+            this.label3.Location = new System.Drawing.Point(21, 17);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(22, 13);
             this.label3.TabIndex = 45;
@@ -154,7 +172,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(35, 43);
+            this.label4.Location = new System.Drawing.Point(21, 43);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(21, 13);
             this.label4.TabIndex = 46;
@@ -163,7 +181,7 @@
             // txtSPpct
             // 
             this.txtSPpct.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtSPpct.Location = new System.Drawing.Point(118, 38);
+            this.txtSPpct.Location = new System.Drawing.Point(120, 38);
             this.txtSPpct.Name = "txtSPpct";
             this.txtSPpct.Size = new System.Drawing.Size(44, 23);
             this.txtSPpct.TabIndex = 40;
@@ -178,7 +196,9 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtSPKey);
+            this.Controls.Add(this.txtSPBoxKey);
             this.Controls.Add(this.txtHpKey);
+            this.Controls.Add(this.txtHpBoxKey);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtSPpct);
@@ -211,7 +231,9 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtHpKey;
+        private System.Windows.Forms.TextBox txtHpBoxKey;
         private System.Windows.Forms.TextBox txtSPKey;
+        private System.Windows.Forms.TextBox txtSPBoxKey;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown txtSPpct;

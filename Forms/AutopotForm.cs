@@ -43,7 +43,9 @@ namespace _4RTools.Forms
         private void InitializeApplicationForm()
         {
             this.txtHpKey.Text = this.autopot.hpKey.ToString();
+            this.txtHpBoxKey.Text = this.autopot.hpBoxKey.ToString();
             this.txtSPKey.Text = this.autopot.spKey.ToString();
+            this.txtSPBoxKey.Text = this.autopot.spBoxKey.ToString();
             this.txtHPpct.Text = this.autopot.hpPercent.ToString();
             this.txtSPpct.Text = this.autopot.spPercent.ToString();
             this.txtAutopotDelay.Text = this.autopot.delay.ToString();
@@ -52,11 +54,18 @@ namespace _4RTools.Forms
             txtHpKey.KeyDown += new System.Windows.Forms.KeyEventHandler(FormUtils.OnKeyDown);
             txtHpKey.KeyPress += new KeyPressEventHandler(FormUtils.OnKeyPress);
             txtHpKey.TextChanged += new EventHandler(this.onHpTextChange);
+
+            txtHpBoxKey.KeyDown += new System.Windows.Forms.KeyEventHandler(FormUtils.OnKeyDown);
+            txtHpBoxKey.KeyPress += new KeyPressEventHandler(FormUtils.OnKeyPress);
+            txtHpBoxKey.TextChanged += new EventHandler(this.onHpBoxTextChange);
+
             txtSPKey.KeyDown += new System.Windows.Forms.KeyEventHandler(FormUtils.OnKeyDown);
             txtSPKey.KeyPress += new KeyPressEventHandler(FormUtils.OnKeyPress);
             txtSPKey.TextChanged += new EventHandler(this.onSpTextChange);
 
-
+            txtSPBoxKey.KeyDown += new System.Windows.Forms.KeyEventHandler(FormUtils.OnKeyDown);
+            txtSPBoxKey.KeyPress += new KeyPressEventHandler(FormUtils.OnKeyPress);
+            txtSPBoxKey.TextChanged += new EventHandler(this.onSpBoxTextChange);
         }
 
         private void onHpTextChange(object sender, EventArgs e)
@@ -66,10 +75,24 @@ namespace _4RTools.Forms
             ProfileSingleton.SetConfiguration(this.autopot);
         }
 
+        private void onHpBoxTextChange(object sender, EventArgs e)
+        {
+            Key key = (Key)Enum.Parse(typeof(Key), txtHpBoxKey.Text.ToString());
+            this.autopot.hpBoxKey = key;
+            ProfileSingleton.SetConfiguration(this.autopot);
+        }
+
         private void onSpTextChange(object sender, EventArgs e)
         {
             Key key = (Key)Enum.Parse(typeof(Key), txtSPKey.Text.ToString());
             this.autopot.spKey = key;
+            ProfileSingleton.SetConfiguration(this.autopot);
+        }
+
+        private void onSpBoxTextChange(object sender, EventArgs e)
+        {
+            Key key = (Key)Enum.Parse(typeof(Key), txtSPBoxKey.Text.ToString());
+            this.autopot.spBoxKey = key;
             ProfileSingleton.SetConfiguration(this.autopot);
         }
 
