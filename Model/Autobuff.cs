@@ -292,7 +292,7 @@ namespace _4RTools.Model
             {
                 Relog();
             }
-            else if (plainText.Contains("Anti-Bot"))
+            else if (plainText.Contains("Anti-B"))
             {
                 AnswerAntiBot(justNumbers);
             }
@@ -358,8 +358,8 @@ namespace _4RTools.Model
                         foundAntiBot = false;
                     }
 
-                    // Is 90% Overweight
-                    if (status == EffectStatusIDs.OVERWEIGHT_90 && !foundAntiBot)
+                    // Is 50% Overweight
+                    if (status == EffectStatusIDs.OVERWEIGHT_50 && !foundAntiBot)
                         StoreItem();
 
                     if (status == EffectStatusIDs.OVERTHRUSTMAX)
