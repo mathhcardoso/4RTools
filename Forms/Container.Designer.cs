@@ -62,6 +62,12 @@ namespace _4RTools.Forms
             this.tabPageYggAutopot = new System.Windows.Forms.TabPage();
             this.tabPageSkillTimer = new System.Windows.Forms.TabPage();
             this.panelAdvertisement = new System.Windows.Forms.Panel();
+            this.password = new System.Windows.Forms.Label();
+            this.txtPassword = new System.Windows.Forms.TextBox();
+            this.antibot = new System.Windows.Forms.Label();
+            this.chkAntibot = new System.Windows.Forms.CheckBox();
+            this.autoStorage = new System.Windows.Forms.Label();
+            this.chkAutoStorage = new System.Windows.Forms.CheckBox();
             this.atkDefMode.SuspendLayout();
             this.panelFooter.SuspendLayout();
             this.tabControlAutopot.SuspendLayout();
@@ -304,7 +310,7 @@ namespace _4RTools.Forms
             // lblCharacterName
             // 
             this.lblCharacterName.AutoSize = true;
-            this.lblCharacterName.Location = new System.Drawing.Point(362, 210);
+            this.lblCharacterName.Location = new System.Drawing.Point(305, 197);
             this.lblCharacterName.Name = "lblCharacterName";
             this.lblCharacterName.Size = new System.Drawing.Size(87, 13);
             this.lblCharacterName.TabIndex = 19;
@@ -315,7 +321,7 @@ namespace _4RTools.Forms
             this.characterName.AutoSize = true;
             this.characterName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.characterName.ForeColor = System.Drawing.Color.DarkGreen;
-            this.characterName.Location = new System.Drawing.Point(362, 223);
+            this.characterName.Location = new System.Drawing.Point(305, 210);
             this.characterName.Name = "characterName";
             this.characterName.Size = new System.Drawing.Size(19, 13);
             this.characterName.TabIndex = 20;
@@ -377,12 +383,72 @@ namespace _4RTools.Forms
             this.panelAdvertisement.Size = new System.Drawing.Size(292, 556);
             this.panelAdvertisement.TabIndex = 26;
             // 
+            // password
+            // 
+            this.password.AutoSize = true;
+            this.password.Location = new System.Drawing.Point(305, 223);
+            this.password.Name = "password";
+            this.password.Size = new System.Drawing.Size(56, 13);
+            this.password.TabIndex = 27;
+            this.password.Text = "Password:";
+            // 
+            // txtPassword
+            // 
+            this.txtPassword.Location = new System.Drawing.Point(308, 239);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.Size = new System.Drawing.Size(274, 20);
+            this.txtPassword.TabIndex = 28;
+            // 
+            // antibot
+            // 
+            this.antibot.AutoSize = true;
+            this.antibot.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.antibot.Location = new System.Drawing.Point(226, 10);
+            this.antibot.Name = "antibot";
+            this.antibot.Size = new System.Drawing.Size(53, 17);
+            this.antibot.TabIndex = 29;
+            this.antibot.Text = "AntiBot";
+            // 
+            // chkAntibot
+            // 
+            this.chkAntibot.AutoSize = true;
+            this.chkAntibot.Location = new System.Drawing.Point(229, 33);
+            this.chkAntibot.Name = "chkAntibot";
+            this.chkAntibot.Size = new System.Drawing.Size(15, 14);
+            this.chkAntibot.TabIndex = 30;
+            this.chkAntibot.UseVisualStyleBackColor = true;
+            // 
+            // autoStorage
+            // 
+            this.autoStorage.AutoSize = true;
+            this.autoStorage.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.autoStorage.Location = new System.Drawing.Point(285, 10);
+            this.autoStorage.Name = "autoStorage";
+            this.autoStorage.Size = new System.Drawing.Size(91, 17);
+            this.autoStorage.TabIndex = 31;
+            this.autoStorage.Text = "Auto Storage";
+            // 
+            // chkAutoStorage
+            // 
+            this.chkAutoStorage.AutoSize = true;
+            this.chkAutoStorage.Location = new System.Drawing.Point(288, 33);
+            this.chkAutoStorage.Name = "chkAutoStorage";
+            this.chkAutoStorage.Size = new System.Drawing.Size(15, 14);
+            this.chkAutoStorage.TabIndex = 32;
+            this.chkAutoStorage.UseVisualStyleBackColor = true;
+            // 
             // Container
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(900, 624);
+            this.Controls.Add(this.autoStorage);
+            this.Controls.Add(this.chkAutoStorage);
+            this.Controls.Add(this.chkAntibot);
+            this.Controls.Add(this.antibot);
+            this.Controls.Add(this.txtPassword);
+            this.Controls.Add(this.password);
             this.Controls.Add(this.panelAdvertisement);
             this.Controls.Add(this.tabControlAutopot);
             this.Controls.Add(this.panelFooter);
@@ -448,5 +514,11 @@ namespace _4RTools.Forms
         private TabPage tabPageSkillTimer;
         private TabPage tabPageServer;
         private Panel panelAdvertisement;
+        private Label password;
+        private TextBox txtPassword;
+        private Label antibot;
+        private CheckBox chkAntibot;
+        private Label autoStorage;
+        private CheckBox chkAutoStorage;
     }
 }

@@ -19,7 +19,10 @@ namespace _4RTools.Forms
 
             InitializeComponent();
             this.Text = AppConfig.Name + " - " + AppConfig.Version; // Window title
-
+            this.chkAntibot.Checked = ProfileSingleton.GetCurrent().UserPreferences.enabledAntibot;
+            this.chkAntibot.CheckedChanged += new EventHandler(this.chkAntibot_CheckedChanged);
+            this.chkAutoStorage.Checked = ProfileSingleton.GetCurrent().UserPreferences.enabledAutoStorage;
+            this.chkAutoStorage.CheckedChanged += new EventHandler(this.chkAutoStorage_CheckedChanged);
             //Container Configuration
             this.IsMdiContainer = true;
             SetBackGroundColorOfMDIForm();
@@ -172,6 +175,8 @@ namespace _4RTools.Forms
                     {
                         characterName.Text = ClientSingleton.GetClient().ReadCharacterName();
                     }
+                    this.chkAntibot.Checked = ProfileSingleton.GetCurrent().UserPreferences.enabledAntibot;
+                    this.chkAutoStorage.Checked = ProfileSingleton.GetCurrent().UserPreferences.enabledAutoStorage;
                     break;
                 case MessageCode.SERVER_LIST_CHANGED:
                     this.refreshProcessList();
@@ -327,5 +332,19 @@ namespace _4RTools.Forms
         }
 
         #endregion
+
+        private void chkAntibot_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = sender as CheckBox;
+            ProfileSingleton.GetCurrent().UserPreferences.enabledAntibot = chk.Checked;
+            ProfileSingleton.SetConfiguration(ProfileSingleton.GetCurrent().UserPreferences);
+        }
+
+        private void chkAutoStorage_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = sender as CheckBox;
+            ProfileSingleton.GetCurrent().UserPreferences.enabledAutoStorage = chk.Checked;
+            ProfileSingleton.SetConfiguration(ProfileSingleton.GetCurrent().UserPreferences);
+        }
     }
 }

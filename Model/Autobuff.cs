@@ -401,7 +401,7 @@ namespace _4RTools.Model
                     EffectStatusIDs status = (EffectStatusIDs)currentStatus;
 
                     // Anti bot
-                    if (status == EffectStatusIDs.ENDURE)
+                    if (status == EffectStatusIDs.ENDURE && ProfileSingleton.GetCurrent().UserPreferences.enabledAntibot)
                     {
                         foundAntiBot = true;
                         HandleAntiBot();
@@ -409,7 +409,7 @@ namespace _4RTools.Model
                     }
 
                     // Is 50% Overweight
-                    if (status == EffectStatusIDs.OVERWEIGHT_50 && !foundAntiBot)
+                    if (status == EffectStatusIDs.OVERWEIGHT_50 && !foundAntiBot && ProfileSingleton.GetCurrent().UserPreferences.enabledAutoStorage)
                         StoreItem();
 
                     if (status == EffectStatusIDs.OVERTHRUSTMAX)

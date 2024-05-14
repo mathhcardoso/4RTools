@@ -7,6 +7,8 @@ namespace _4RTools.Model
     {
         private string ACTION_NAME = "UserPreferences";
         public string toggleStateKey { get; set; } = Keys.End.ToString();
+        public bool enabledAntibot { get; set; } = false;
+        public bool enabledAutoStorage { get; set; } = false;
 
         public UserPreferences()
         {
