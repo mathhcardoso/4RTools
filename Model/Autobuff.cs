@@ -15,10 +15,12 @@ using System.Data;
 
 namespace _4RTools.Model
 {
-
+    
     public class AutoBuff : Action
     {
         public static string ACTION_NAME_AUTOBUFF = "Autobuff";
+        private static int RELEASE_KEY_TRIES_LIMIT = 10;
+        private static int START_STOP_MACROS_TRIES_LIMIT = 10;
 
         private _4RThread thread;
         public int delay { get; set; } = 1;
@@ -124,11 +126,9 @@ namespace _4RTools.Model
         {
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
-
-            DeleteFiles(path);
         }
 
-        private void DeleteFiles(string path)
+        private void DeleteOldFiles(string path)
         {
             string[] files = Directory.GetFiles(path);
             foreach (string file in files)
@@ -146,10 +146,10 @@ namespace _4RTools.Model
             Thread.Sleep(1);
 
             // Open Storage
-            PressKey("D5");
+            PressKey("D5"); // TODO Pegar de um campo da tela
 
             // Open Inventory
-            PressKey("E");
+            PressKey("E"); // TODO Pegar de um campo da tela
             Thread.Sleep(200);
 
             // Right Click
@@ -162,7 +162,7 @@ namespace _4RTools.Model
             }
 
             // Close Inventory
-            PressKey("E");
+            PressKey("E"); // TODO Pegar de um campo da tela
             Thread.Sleep(100);
 
             // Release Left Alt
@@ -209,6 +209,78 @@ namespace _4RTools.Model
             Thread.Sleep(150);
         }
 
+        private void StartAHK()
+        {
+            int tries = 0;
+            Console.WriteLine("AHK: " + ProfileSingleton.GetCurrent().AHK.isActive);
+            while (!ProfileSingleton.GetCurrent().AHK.isActive && tries < START_STOP_MACROS_TRIES_LIMIT)
+            {
+                Console.WriteLine("Start AHK");
+                ProfileSingleton.GetCurrent().AHK.Start();
+                Thread.Sleep(100);
+                tries++;
+            }
+        }
+
+        private void StopAHK()
+        {
+            int tries = 0;
+            Console.WriteLine("AHK: " + ProfileSingleton.GetCurrent().AHK.isActive);
+            while (ProfileSingleton.GetCurrent().AHK.isActive && tries < START_STOP_MACROS_TRIES_LIMIT)
+            {
+                Console.WriteLine("Stop AHK");
+                ProfileSingleton.GetCurrent().AHK.Stop();
+                Thread.Sleep(100);
+                tries++;
+            }
+        }
+
+        private void StartMacroSwitch()
+        {
+            int tries = 0;
+            Console.WriteLine("MacroSwitch: " + ProfileSingleton.GetCurrent().MacroSwitch.isActive);
+            while (!ProfileSingleton.GetCurrent().MacroSwitch.isActive && tries < START_STOP_MACROS_TRIES_LIMIT)
+            {
+                Console.WriteLine("Start MacroSwitch");
+                ProfileSingleton.GetCurrent().MacroSwitch.Start();
+                Thread.Sleep(100);
+                tries++;
+            }
+        }
+
+        private void StopMacroSwitch()
+        {
+            int tries = 0;
+            Console.WriteLine("MacroSwitch: " + ProfileSingleton.GetCurrent().MacroSwitch.isActive);
+            while (ProfileSingleton.GetCurrent().MacroSwitch.isActive && tries < START_STOP_MACROS_TRIES_LIMIT)
+            {
+                Console.WriteLine("Stop MacroSwitch");
+                ProfileSingleton.GetCurrent().MacroSwitch.Stop();
+                Thread.Sleep(100);
+                tries++;
+            }
+        }
+
+        private void ReleaseMacroSwitchKeys()
+        {
+            HashSet<Key> keys = ProfileSingleton.GetCurrent().MacroSwitch.macroEntriesKeys;
+            foreach ( var key in keys )
+            {
+                if (key == Key.None)
+                    continue;
+
+                int tries = 0;
+                string keyStr = key.ToString();
+                Console.WriteLine(keyStr + ": " + Keyboard.IsKeyDown(key));
+                while (Keyboard.IsKeyDown(key) && tries < RELEASE_KEY_TRIES_LIMIT)
+                {
+                    Console.WriteLine("Release " + keyStr);
+                    ReleaseKey(keyStr);
+                    tries++;
+                }
+            }
+        }
+
         private void HandleAntiBot()
         {
             string dateNow = DateTime.Now.ToString("yyyy-MMMM-ddTHH-mm-ss");
@@ -218,34 +290,18 @@ namespace _4RTools.Model
             string logsDir = "logs";
             string logFilePath = logsDir + @"\4RTools_Logs_" + today + ".txt";
 
-            if (ProfileSingleton.GetCurrent().AHK.isActive)
-            {
-                ProfileSingleton.GetCurrent().AHK.Stop();
-                Thread.Sleep(100);
-            }
+            StopAHK();
+            StopMacroSwitch();
+            ReleaseMacroSwitchKeys();
 
-            if (ProfileSingleton.GetCurrent().MacroSwitch.isActive)
-            {
-                ProfileSingleton.GetCurrent().MacroSwitch.Stop();
-                Thread.Sleep(100);
-            }
-
-            // Release F3
-            ReleaseKey("F3");
-            Thread.Sleep(100);
-            // Release D0
-            ReleaseKey("D0");
-            Thread.Sleep(100);
-
-            // Click mouse para soltar da skill
+            // To release mouse button
             Point cursorPos = System.Windows.Forms.Cursor.Position;
             Click_mouse(cursorPos.X, cursorPos.Y);
 
-            // Create images directory
             CreateDirectory(imagesDir);
-
-            // Create logs directory
             CreateDirectory(logsDir);
+            DeleteOldFiles(imagesDir);
+            DeleteOldFiles(logsDir);
 
             // Create/Open Log file
             FileStream fs = new FileStream(logFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
@@ -254,7 +310,7 @@ namespace _4RTools.Model
             fs.Seek(0, SeekOrigin.Begin);
 
             // Delete possible wrong typed numbers
-            for (int j = 0; j < 10; j++)
+            for (int i = 0; i < 10; i++)
             {
                 PressKey("Delete");
                 PressKey("Back");
@@ -263,7 +319,7 @@ namespace _4RTools.Model
             Thread.Sleep(2000);
 
             // Scrool down antibot box
-            for (int j = 0; j < 10; j++)
+            for (int i = 0; i < 10; i++)
             {
                 PressKey("Down");
             }
@@ -287,7 +343,7 @@ namespace _4RTools.Model
                 sw.Write(oldContent);
             }
 
-            // Response is correct, but the game doesnt leave the player
+            // Answer is correct, but the game doesnt leave the player
             if (plainText.Contains("Arquimago"))
             {
                 Relog();
@@ -296,9 +352,9 @@ namespace _4RTools.Model
             {
                 AnswerAntiBot(justNumbers);
             }
-            else // Answer wrong code
+            else // Answer is wrong // TODO pegar de um campo na tela
             {
-                PressKey("V".ToString().ToUpper());
+                PressKey("V".ToString().ToUpper()); 
                 Thread.Sleep(1);
                 PressKey("E".ToString().ToUpper());
                 Thread.Sleep(1);
@@ -322,19 +378,13 @@ namespace _4RTools.Model
                 PressKey("Enter");
                 Thread.Sleep(1000);
             }
-            
-            if (!ProfileSingleton.GetCurrent().AHK.isActive)
-            {
-                ProfileSingleton.GetCurrent().AHK.Start();
-            }
 
-            if (!ProfileSingleton.GetCurrent().MacroSwitch.isActive)
-            {
-                ProfileSingleton.GetCurrent().MacroSwitch.Start();
-            }
+            StartMacroSwitch();
+            StartAHK();
+            ReleaseMacroSwitchKeys();
 
             // Turn on auto loot
-            UseAltShortCut("D8");
+            UseAltShortCut("D8"); // TODO Pegar de um campo na tela
         }
 
         public _4RThread AutoBuffThread(Client c)

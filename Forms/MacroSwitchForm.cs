@@ -50,6 +50,8 @@ namespace _4RTools.Forms
                     {
                         TextBox textBox = (TextBox)controls[0];
                         textBox.Text = chainConfig.macroEntries[cbName].key.ToString();
+                        if (chainConfig.macroEntries[cbName].key != Key.None)
+                            ProfileSingleton.GetCurrent().MacroSwitch.macroEntriesKeys.Add(chainConfig.macroEntries[cbName].key);
                     }
 
                     Control[] d = group.Controls.Find($"{cbName}delay", true); // Delays
@@ -73,6 +75,8 @@ namespace _4RTools.Forms
             Key key = (Key)Enum.Parse(typeof(Key), textBox.Text.ToString());
             NumericUpDown delayInput = (NumericUpDown)group.Controls.Find($"{textBox.Name}delay", true)[0];
             chainConfig.macroEntries[textBox.Name] = new MacroKey(key, decimal.ToInt16(delayInput.Value));
+            if (key != Key.None)
+                ProfileSingleton.GetCurrent().MacroSwitch.macroEntriesKeys.Add(key);
 
             bool isFirstInput = Regex.IsMatch(textBox.Name, $"in1mac{chainID}");
             if (isFirstInput) { chainConfig.trigger = key; }

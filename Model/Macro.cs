@@ -62,6 +62,7 @@ namespace _4RTools.Model
         private _4RThread thread;
         public bool isActive { get; set; } = false;
         public List<ChainConfig> chainConfigs { get; set; } = new List<ChainConfig>();
+        public HashSet<Key> macroEntriesKeys { get; set; } = new HashSet<Key>();
 
         public Macro(string macroname, int macroLanes)
         {
