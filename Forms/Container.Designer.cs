@@ -66,11 +66,16 @@ namespace _4RTools.Forms
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.antibot = new System.Windows.Forms.Label();
             this.chkAntibot = new System.Windows.Forms.CheckBox();
-            this.autoStorage = new System.Windows.Forms.Label();
             this.chkAutoStorage = new System.Windows.Forms.CheckBox();
+            this.groupBoxAutoStorage = new System.Windows.Forms.GroupBox();
+            this.storageKey = new System.Windows.Forms.Label();
+            this.txtStorageKey = new System.Windows.Forms.TextBox();
+            this.alootidKey = new System.Windows.Forms.Label();
+            this.txtAlootidKey = new System.Windows.Forms.TextBox();
             this.atkDefMode.SuspendLayout();
             this.panelFooter.SuspendLayout();
             this.tabControlAutopot.SuspendLayout();
+            this.groupBoxAutoStorage.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblProcessName
@@ -310,7 +315,7 @@ namespace _4RTools.Forms
             // lblCharacterName
             // 
             this.lblCharacterName.AutoSize = true;
-            this.lblCharacterName.Location = new System.Drawing.Point(305, 197);
+            this.lblCharacterName.Location = new System.Drawing.Point(226, 13);
             this.lblCharacterName.Name = "lblCharacterName";
             this.lblCharacterName.Size = new System.Drawing.Size(87, 13);
             this.lblCharacterName.TabIndex = 19;
@@ -321,7 +326,7 @@ namespace _4RTools.Forms
             this.characterName.AutoSize = true;
             this.characterName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.characterName.ForeColor = System.Drawing.Color.DarkGreen;
-            this.characterName.Location = new System.Drawing.Point(305, 210);
+            this.characterName.Location = new System.Drawing.Point(235, 32);
             this.characterName.Name = "characterName";
             this.characterName.Size = new System.Drawing.Size(19, 13);
             this.characterName.TabIndex = 20;
@@ -388,9 +393,9 @@ namespace _4RTools.Forms
             this.password.AutoSize = true;
             this.password.Location = new System.Drawing.Point(305, 223);
             this.password.Name = "password";
-            this.password.Size = new System.Drawing.Size(56, 13);
+            this.password.Size = new System.Drawing.Size(94, 13);
             this.password.TabIndex = 27;
-            this.password.Text = "Password:";
+            this.password.Text = "Password to relog:";
             // 
             // txtPassword
             // 
@@ -402,40 +407,77 @@ namespace _4RTools.Forms
             // antibot
             // 
             this.antibot.AutoSize = true;
-            this.antibot.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.antibot.Location = new System.Drawing.Point(226, 10);
+            this.antibot.Location = new System.Drawing.Point(305, 180);
             this.antibot.Name = "antibot";
-            this.antibot.Size = new System.Drawing.Size(53, 17);
+            this.antibot.Size = new System.Drawing.Size(41, 13);
             this.antibot.TabIndex = 29;
             this.antibot.Text = "AntiBot";
             // 
             // chkAntibot
             // 
             this.chkAntibot.AutoSize = true;
-            this.chkAntibot.Location = new System.Drawing.Point(229, 33);
+            this.chkAntibot.Location = new System.Drawing.Point(317, 198);
             this.chkAntibot.Name = "chkAntibot";
             this.chkAntibot.Size = new System.Drawing.Size(15, 14);
             this.chkAntibot.TabIndex = 30;
             this.chkAntibot.UseVisualStyleBackColor = true;
             // 
-            // autoStorage
-            // 
-            this.autoStorage.AutoSize = true;
-            this.autoStorage.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.autoStorage.Location = new System.Drawing.Point(285, 10);
-            this.autoStorage.Name = "autoStorage";
-            this.autoStorage.Size = new System.Drawing.Size(91, 17);
-            this.autoStorage.TabIndex = 31;
-            this.autoStorage.Text = "Auto Storage";
-            // 
             // chkAutoStorage
             // 
             this.chkAutoStorage.AutoSize = true;
-            this.chkAutoStorage.Location = new System.Drawing.Point(288, 33);
+            this.chkAutoStorage.Location = new System.Drawing.Point(8, 17);
             this.chkAutoStorage.Name = "chkAutoStorage";
             this.chkAutoStorage.Size = new System.Drawing.Size(15, 14);
             this.chkAutoStorage.TabIndex = 32;
             this.chkAutoStorage.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxAutoStorage
+            // 
+            this.groupBoxAutoStorage.Controls.Add(this.chkAutoStorage);
+            this.groupBoxAutoStorage.Controls.Add(this.storageKey);
+            this.groupBoxAutoStorage.Controls.Add(this.txtStorageKey);
+            this.groupBoxAutoStorage.Controls.Add(this.alootidKey);
+            this.groupBoxAutoStorage.Controls.Add(this.txtAlootidKey);
+            this.groupBoxAutoStorage.Location = new System.Drawing.Point(344, 180);
+            this.groupBoxAutoStorage.Name = "groupBoxAutoStorage";
+            this.groupBoxAutoStorage.Size = new System.Drawing.Size(238, 40);
+            this.groupBoxAutoStorage.TabIndex = 26;
+            this.groupBoxAutoStorage.TabStop = false;
+            this.groupBoxAutoStorage.Text = "Auto Store";
+            // 
+            // storageKey
+            // 
+            this.storageKey.AutoSize = true;
+            this.storageKey.Location = new System.Drawing.Point(29, 17);
+            this.storageKey.Name = "storageKey";
+            this.storageKey.Size = new System.Drawing.Size(68, 13);
+            this.storageKey.TabIndex = 31;
+            this.storageKey.Text = "Storage: Alt+";
+            // 
+            // txtStorageKey
+            // 
+            this.txtStorageKey.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtStorageKey.Location = new System.Drawing.Point(94, 12);
+            this.txtStorageKey.Name = "txtStorageKey";
+            this.txtStorageKey.Size = new System.Drawing.Size(35, 23);
+            this.txtStorageKey.TabIndex = 44;
+            // 
+            // alootidKey
+            // 
+            this.alootidKey.AutoSize = true;
+            this.alootidKey.Location = new System.Drawing.Point(135, 16);
+            this.alootidKey.Name = "alootidKey";
+            this.alootidKey.Size = new System.Drawing.Size(63, 13);
+            this.alootidKey.TabIndex = 45;
+            this.alootidKey.Text = "Alootid: Alt+";
+            // 
+            // txtAlootidKey
+            // 
+            this.txtAlootidKey.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtAlootidKey.Location = new System.Drawing.Point(197, 11);
+            this.txtAlootidKey.Name = "txtAlootidKey";
+            this.txtAlootidKey.Size = new System.Drawing.Size(35, 23);
+            this.txtAlootidKey.TabIndex = 46;
             // 
             // Container
             // 
@@ -443,8 +485,7 @@ namespace _4RTools.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(900, 624);
-            this.Controls.Add(this.autoStorage);
-            this.Controls.Add(this.chkAutoStorage);
+            this.Controls.Add(this.groupBoxAutoStorage);
             this.Controls.Add(this.chkAntibot);
             this.Controls.Add(this.antibot);
             this.Controls.Add(this.txtPassword);
@@ -476,6 +517,8 @@ namespace _4RTools.Forms
             this.panelFooter.ResumeLayout(false);
             this.panelFooter.PerformLayout();
             this.tabControlAutopot.ResumeLayout(false);
+            this.groupBoxAutoStorage.ResumeLayout(false);
+            this.groupBoxAutoStorage.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -518,7 +561,11 @@ namespace _4RTools.Forms
         private TextBox txtPassword;
         private Label antibot;
         private CheckBox chkAntibot;
-        private Label autoStorage;
         private CheckBox chkAutoStorage;
+        private GroupBox groupBoxAutoStorage;
+        private Label storageKey;
+        private TextBox txtStorageKey;
+        private Label alootidKey;
+        private TextBox txtAlootidKey;
     }
 }

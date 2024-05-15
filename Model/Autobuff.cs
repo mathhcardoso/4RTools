@@ -141,33 +141,36 @@ namespace _4RTools.Model
 
         private void StoreItem()
         {
-            // Hold Left Alt
-            Interop.keybd_event(Constants.VK_MENU, Constants.KEYEVENTF_EXTENDEDKEY, 0, 0);
-            Thread.Sleep(1);
-
-            // Open Storage
-            PressKey("D5"); // TODO Pegar de um campo da tela
-
-            // Open Inventory
-            PressKey("E"); // TODO Pegar de um campo da tela
-            Thread.Sleep(200);
-
-            // Right Click
-            for (int i = 0; i < 10; i++)
+            if ((Key)Enum.Parse(typeof(Key), ProfileSingleton.GetCurrent().UserPreferences.storageTextKey) != Key.None)
             {
-                Interop.PostMessage(ClientSingleton.GetClient().process.MainWindowHandle, Constants.WM_RBUTTONDOWN, 0, 0);
-                Thread.Sleep(10);
-                Interop.PostMessage(ClientSingleton.GetClient().process.MainWindowHandle, Constants.WM_RBUTTONUP, 0, 0);
-                Thread.Sleep(10);
+                // Hold Left Alt
+                Interop.keybd_event(Constants.VK_MENU, Constants.KEYEVENTF_EXTENDEDKEY, 0, 0);
+                Thread.Sleep(1);
+
+                // Open Storage
+                PressKey(ProfileSingleton.GetCurrent().UserPreferences.storageTextKey);
+
+                // Open Inventory
+                PressKey("E");
+                Thread.Sleep(200);
+
+                // Right Click
+                for (int i = 0; i < 10; i++)
+                {
+                    Interop.PostMessage(ClientSingleton.GetClient().process.MainWindowHandle, Constants.WM_RBUTTONDOWN, 0, 0);
+                    Thread.Sleep(10);
+                    Interop.PostMessage(ClientSingleton.GetClient().process.MainWindowHandle, Constants.WM_RBUTTONUP, 0, 0);
+                    Thread.Sleep(10);
+                }
+
+                // Close Inventory
+                PressKey("E");
+                Thread.Sleep(100);
+
+                // Release Left Alt
+                Interop.keybd_event(Constants.VK_MENU, 0, Constants.KEYEVENTF_KEYUP, 0);
+                Thread.Sleep(100);
             }
-
-            // Close Inventory
-            PressKey("E"); // TODO Pegar de um campo da tela
-            Thread.Sleep(100);
-
-            // Release Left Alt
-            Interop.keybd_event(Constants.VK_MENU, 0, Constants.KEYEVENTF_KEYUP, 0);
-            Thread.Sleep(100);
         }
 
         private void TakeScreenShot(string imagePath)
@@ -281,6 +284,14 @@ namespace _4RTools.Model
             }
         }
 
+        private void TurnOnAlootid()
+        {
+            if ((Key)Enum.Parse(typeof(Key), ProfileSingleton.GetCurrent().UserPreferences.alootidTextKey) != Key.None)
+            {
+                UseAltShortCut(ProfileSingleton.GetCurrent().UserPreferences.alootidTextKey);
+            }
+        }
+
         private void HandleAntiBot()
         {
             string dateNow = DateTime.Now.ToString("yyyy-MMMM-ddTHH-mm-ss");
@@ -352,39 +363,34 @@ namespace _4RTools.Model
             {
                 AnswerAntiBot(justNumbers);
             }
-            else // Answer is wrong // TODO pegar de um campo na tela
+            else // Answer is wrong
             {
-                PressKey("V".ToString().ToUpper()); 
-                Thread.Sleep(1);
-                PressKey("E".ToString().ToUpper());
-                Thread.Sleep(1);
-                PressKey("L".ToString().ToUpper());
-                Thread.Sleep(1);
-                PressKey("H".ToString().ToUpper());
-                Thread.Sleep(1);
-                PressKey("A".ToString().ToUpper());
-                Thread.Sleep(1);
-                PressKey("D2".ToString().ToUpper());
-                Thread.Sleep(1);
-                PressKey("D2".ToString().ToUpper());
-                Thread.Sleep(1);
+                if (ProfileSingleton.GetCurrent().UserPreferences.passwordText != "")
+                {
+                    foreach (char c in ProfileSingleton.GetCurrent().UserPreferences.passwordText)
+                    {
+                        string key = c.ToString();
+                        if (char.IsDigit(c))
+                            key = "D" + key;
+                        PressKey(key.ToUpper());
+                        Thread.Sleep(5);
+                    }
 
-                // Press Enter twice
-                Thread.Sleep(10000);
-                PressKey("Enter");
-                Thread.Sleep(3000);
-                PressKey("Enter");
-                Thread.Sleep(1000);
-                PressKey("Enter");
-                Thread.Sleep(1000);
+                    // Press Enter twice
+                    Thread.Sleep(10000);
+                    PressKey("Enter");
+                    Thread.Sleep(3000);
+                    PressKey("Enter");
+                    Thread.Sleep(1000);
+                    PressKey("Enter");
+                    Thread.Sleep(1000);
+                }
             }
 
             StartMacroSwitch();
             StartAHK();
             ReleaseMacroSwitchKeys();
-
-            // Turn on auto loot
-            UseAltShortCut("D8"); // TODO Pegar de um campo na tela
+            TurnOnAlootid();
         }
 
         public _4RThread AutoBuffThread(Client c)

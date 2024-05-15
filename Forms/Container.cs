@@ -2,9 +2,9 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.IO;
 using _4RTools.Model;
 using _4RTools.Utils;
+using System.Windows.Input;
 
 namespace _4RTools.Forms
 {
@@ -21,8 +21,23 @@ namespace _4RTools.Forms
             this.Text = AppConfig.Name + " - " + AppConfig.Version; // Window title
             this.chkAntibot.Checked = ProfileSingleton.GetCurrent().UserPreferences.enabledAntibot;
             this.chkAntibot.CheckedChanged += new EventHandler(this.chkAntibot_CheckedChanged);
+
+            this.txtPassword.Text = ProfileSingleton.GetCurrent().UserPreferences.passwordText;
+            this.txtPassword.TextChanged += new EventHandler(this.onPasswordTextChange);
+
             this.chkAutoStorage.Checked = ProfileSingleton.GetCurrent().UserPreferences.enabledAutoStorage;
             this.chkAutoStorage.CheckedChanged += new EventHandler(this.chkAutoStorage_CheckedChanged);
+
+            this.txtStorageKey.Text = ProfileSingleton.GetCurrent().UserPreferences.storageTextKey;
+            this.txtStorageKey.KeyDown += new System.Windows.Forms.KeyEventHandler(FormUtils.OnKeyDown);
+            this.txtStorageKey.KeyPress += new KeyPressEventHandler(FormUtils.OnKeyPress);
+            this.txtStorageKey.TextChanged += new EventHandler(this.onStorageKeyTextChange);
+
+            this.txtAlootidKey.Text = ProfileSingleton.GetCurrent().UserPreferences.alootidTextKey;
+            this.txtAlootidKey.KeyDown += new System.Windows.Forms.KeyEventHandler(FormUtils.OnKeyDown);
+            this.txtAlootidKey.KeyPress += new KeyPressEventHandler(FormUtils.OnKeyPress);
+            this.txtAlootidKey.TextChanged += new EventHandler(this.onAlootidKeyTextChange);
+
             //Container Configuration
             this.IsMdiContainer = true;
             SetBackGroundColorOfMDIForm();
@@ -176,7 +191,10 @@ namespace _4RTools.Forms
                         characterName.Text = ClientSingleton.GetClient().ReadCharacterName();
                     }
                     this.chkAntibot.Checked = ProfileSingleton.GetCurrent().UserPreferences.enabledAntibot;
+                    this.txtPassword.Text = ProfileSingleton.GetCurrent().UserPreferences.passwordText;
                     this.chkAutoStorage.Checked = ProfileSingleton.GetCurrent().UserPreferences.enabledAutoStorage;
+                    this.txtStorageKey.Text = ProfileSingleton.GetCurrent().UserPreferences.storageTextKey;
+                    this.txtAlootidKey.Text = ProfileSingleton.GetCurrent().UserPreferences.alootidTextKey;
                     break;
                 case MessageCode.SERVER_LIST_CHANGED:
                     this.refreshProcessList();
@@ -340,10 +358,35 @@ namespace _4RTools.Forms
             ProfileSingleton.SetConfiguration(ProfileSingleton.GetCurrent().UserPreferences);
         }
 
+        private void onPasswordTextChange(object sender, EventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            ProfileSingleton.GetCurrent().UserPreferences.passwordText = textBox.Text.ToString();
+            ProfileSingleton.SetConfiguration(ProfileSingleton.GetCurrent().UserPreferences);
+        }
+
         private void chkAutoStorage_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox chk = sender as CheckBox;
             ProfileSingleton.GetCurrent().UserPreferences.enabledAutoStorage = chk.Checked;
+            ProfileSingleton.SetConfiguration(ProfileSingleton.GetCurrent().UserPreferences);
+        }
+
+        private void onStorageKeyTextChange(object sender, EventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            Key key = (Key)Enum.Parse(typeof(Key), textBox.Text.ToString());
+
+            ProfileSingleton.GetCurrent().UserPreferences.storageTextKey = key.ToString();
+            ProfileSingleton.SetConfiguration(ProfileSingleton.GetCurrent().UserPreferences);
+        }
+
+        private void onAlootidKeyTextChange(object sender, EventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            Key key = (Key)Enum.Parse(typeof(Key), textBox.Text.ToString());
+
+            ProfileSingleton.GetCurrent().UserPreferences.alootidTextKey = key.ToString();
             ProfileSingleton.SetConfiguration(ProfileSingleton.GetCurrent().UserPreferences);
         }
     }
