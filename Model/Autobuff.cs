@@ -84,17 +84,17 @@ namespace _4RTools.Model
             Interop.PostMessage(ClientSingleton.GetClient().process.MainWindowHandle, Constants.WM_KEYUP_MSG_ID, (Keys)Enum.Parse(typeof(Keys), key), 0);
         }
 
-        private void UseAltShortCut(string key)
+        private void PressKeyWithCtrlKey(byte ctlrKey, string key)
         {
             // Hold Left Alt
-            Interop.keybd_event(Constants.VK_MENU, Constants.KEYEVENTF_EXTENDEDKEY, 0, 0);
+            Interop.keybd_event(ctlrKey, Constants.KEYEVENTF_EXTENDEDKEY, 0, 0);
             Thread.Sleep(1);
 
             PressKey(key);
             Thread.Sleep(200);
 
             // Release Left Alt
-            Interop.keybd_event(Constants.VK_MENU, 0, Constants.KEYEVENTF_KEYUP, 0);
+            Interop.keybd_event(ctlrKey, 0, Constants.KEYEVENTF_KEYUP, 0);
             Thread.Sleep(100);
         }
 
@@ -277,7 +277,7 @@ namespace _4RTools.Model
         {
             if ((Key)Enum.Parse(typeof(Key), ProfileSingleton.GetCurrent().UserPreferences.alootidTextKey) != Key.None)
             {
-                UseAltShortCut(ProfileSingleton.GetCurrent().UserPreferences.alootidTextKey);
+                PressKeyWithCtrlKey(Constants.VK_MENU, ProfileSingleton.GetCurrent().UserPreferences.alootidTextKey);
             }
         }
 
@@ -358,26 +358,32 @@ namespace _4RTools.Model
                 {
                     foreach (char c in ProfileSingleton.GetCurrent().UserPreferences.passwordText)
                     {
-                        string key = c.ToString();
+                        string key = c.ToString().ToUpper();
                         if (char.IsDigit(c))
-                            key = "D" + key;
+                        {
+                            PressKey("D" + key);
+                        }
+                        else if (char.IsUpper(c))
+                        {
+                            PressKeyWithCtrlKey(Constants.VK_SHIFT, key);
+                        }
                         else if (char.IsSymbol(c))
                         {
                             // TODO
                         }
-                        
-                        PressKey(key.ToUpper());
+                        else
+                        {
+                            PressKey(key);
+                        }
                         Thread.Sleep(5);
                     }
 
-                    // Press Enter twice
                     Thread.Sleep(10000);
-                    PressKey("Enter");
-                    Thread.Sleep(3000);
-                    PressKey("Enter");
-                    Thread.Sleep(1000);
-                    PressKey("Enter");
-                    Thread.Sleep(1000);
+                    foreach (int t in new int[] { 3000, 1000, 1000 })
+                    {
+                        PressKey("Enter");
+                        Thread.Sleep(t);
+                    }
                 }
             }
 
