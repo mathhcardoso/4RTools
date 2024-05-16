@@ -19,8 +19,8 @@ namespace _4RTools.Model
     public class AutoBuff : Action
     {
         public static string ACTION_NAME_AUTOBUFF = "Autobuff";
-        private static int RELEASE_KEY_TRIES_LIMIT = 10;
-        private static int START_STOP_MACROS_TRIES_LIMIT = 10;
+        private static int RELEASE_KEY_MAX_TRIES = 15;
+        private static int ACT_MAX_TRIES = 15;
 
         private _4RThread thread;
         public int delay { get; set; } = 1;
@@ -134,8 +134,13 @@ namespace _4RTools.Model
             foreach (string file in files)
             {
                 FileInfo fi = new FileInfo(file);
-                if (fi.LastAccessTime < DateTime.Now.AddDays(-2))
-                    fi.Delete();
+                if (fi.CreationTime < DateTime.Now.AddDays(-1))
+                {
+                    File.Delete(file);
+                } else
+                {
+                    break;
+                }
             }
         }
 
@@ -212,55 +217,36 @@ namespace _4RTools.Model
             Thread.Sleep(150);
         }
 
-        private void StartAHK()
+        private void Act(AHK ahk, string action)
         {
             int tries = 0;
-            Console.WriteLine("AHK: " + ProfileSingleton.GetCurrent().AHK.isActive);
-            while (!ProfileSingleton.GetCurrent().AHK.isActive && tries < START_STOP_MACROS_TRIES_LIMIT)
+            while ((action == "Start" && !ahk.isActive) || (action == "Stop" && ahk.isActive))
             {
-                Console.WriteLine("Start AHK");
-                ProfileSingleton.GetCurrent().AHK.Start();
-                Thread.Sleep(100);
-                tries++;
+                if (tries == ACT_MAX_TRIES)
+                {
+                    Console.WriteLine(action + " AHK failed");
+                    break;
+                }
+                Console.WriteLine(action + " AHK - " + ++tries);
+                if (action == "Start") ahk.Start(); else ahk.Stop();
+                Thread.Sleep(1);
             }
         }
 
-        private void StopAHK()
+        private void Act(Macro macroSwitch, string action)
         {
             int tries = 0;
-            Console.WriteLine("AHK: " + ProfileSingleton.GetCurrent().AHK.isActive);
-            while (ProfileSingleton.GetCurrent().AHK.isActive && tries < START_STOP_MACROS_TRIES_LIMIT)
+            while ((action == "Start" && !macroSwitch.isActive) || (action == "Stop" && macroSwitch.isActive))
             {
-                Console.WriteLine("Stop AHK");
-                ProfileSingleton.GetCurrent().AHK.Stop();
-                Thread.Sleep(100);
-                tries++;
-            }
-        }
+                if (tries == ACT_MAX_TRIES)
+                {
+                    Console.WriteLine(action + " MacroSwitch failed");
+                    break;
+                }
 
-        private void StartMacroSwitch()
-        {
-            int tries = 0;
-            Console.WriteLine("MacroSwitch: " + ProfileSingleton.GetCurrent().MacroSwitch.isActive);
-            while (!ProfileSingleton.GetCurrent().MacroSwitch.isActive && tries < START_STOP_MACROS_TRIES_LIMIT)
-            {
-                Console.WriteLine("Start MacroSwitch");
-                ProfileSingleton.GetCurrent().MacroSwitch.Start();
-                Thread.Sleep(100);
-                tries++;
-            }
-        }
-
-        private void StopMacroSwitch()
-        {
-            int tries = 0;
-            Console.WriteLine("MacroSwitch: " + ProfileSingleton.GetCurrent().MacroSwitch.isActive);
-            while (ProfileSingleton.GetCurrent().MacroSwitch.isActive && tries < START_STOP_MACROS_TRIES_LIMIT)
-            {
-                Console.WriteLine("Stop MacroSwitch");
-                ProfileSingleton.GetCurrent().MacroSwitch.Stop();
-                Thread.Sleep(100);
-                tries++;
+                Console.WriteLine(action + " MacroSwitch - " + ++tries);
+                if (action == "Start") macroSwitch.Start(); else macroSwitch.Stop();
+                Thread.Sleep(1);
             }
         }
 
@@ -269,17 +255,20 @@ namespace _4RTools.Model
             HashSet<Key> keys = ProfileSingleton.GetCurrent().MacroSwitch.macroEntriesKeys;
             foreach ( var key in keys )
             {
-                if (key == Key.None)
-                    continue;
+                if (key == Key.None) continue;
 
                 int tries = 0;
                 string keyStr = key.ToString();
                 Console.WriteLine(keyStr + ": " + Keyboard.IsKeyDown(key));
-                while (Keyboard.IsKeyDown(key) && tries < RELEASE_KEY_TRIES_LIMIT)
+                while (Keyboard.IsKeyDown(key))
                 {
-                    Console.WriteLine("Release " + keyStr);
+                    if (tries == RELEASE_KEY_MAX_TRIES)
+                    {
+                        Console.WriteLine("Release " + keyStr + " failed");
+                        break;
+                    }
+                    Console.WriteLine("Release " + keyStr + " - " + ++tries);
                     ReleaseKey(keyStr);
-                    tries++;
                 }
             }
         }
@@ -301,8 +290,8 @@ namespace _4RTools.Model
             string logsDir = "logs";
             string logFilePath = logsDir + @"\4RTools_Logs_" + today + ".txt";
 
-            StopAHK();
-            StopMacroSwitch();
+            Act(ProfileSingleton.GetCurrent().AHK, "Stop");
+            Act(ProfileSingleton.GetCurrent().MacroSwitch, "Stop");
             ReleaseMacroSwitchKeys();
 
             // To release mouse button
@@ -372,6 +361,11 @@ namespace _4RTools.Model
                         string key = c.ToString();
                         if (char.IsDigit(c))
                             key = "D" + key;
+                        else if (char.IsSymbol(c))
+                        {
+                            // TODO
+                        }
+                        
                         PressKey(key.ToUpper());
                         Thread.Sleep(5);
                     }
@@ -387,8 +381,8 @@ namespace _4RTools.Model
                 }
             }
 
-            StartMacroSwitch();
-            StartAHK();
+            Act(ProfileSingleton.GetCurrent().MacroSwitch, "Start");
+            Act(ProfileSingleton.GetCurrent().AHK, "Start");
             ReleaseMacroSwitchKeys();
             TurnOnAlootid();
         }
