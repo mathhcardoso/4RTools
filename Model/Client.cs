@@ -16,21 +16,25 @@ namespace _4RTools.Model
         public string name { get; set; }
         public string description { get; set; }
         public string hpAddress { get; set; }
+        public string weightAddress { get; set; }
         public string nameAddress { get; set; }
 
         public int hpAddressPointer { get; set; }
+        public int weightAddressPointer { get; set; }
         public int nameAddressPointer { get; set; }
 
         public ClientDTO() { }
 
-        public ClientDTO(string name, string description, string hpAddress, string nameAddress)
+        public ClientDTO(string name, string description, string hpAddress, string nameAddress, string weightAddress)
         {
             this.name= name;
             this.description = description;
             this.hpAddress = hpAddress;
+            this.weightAddress = weightAddress;
             this.nameAddress = nameAddress;
 
             this.hpAddressPointer = Convert.ToInt32(hpAddress, 16);
+            this.weightAddressPointer = Convert.ToInt32(weightAddress, 16);
             this.nameAddressPointer = Convert.ToInt32(nameAddress, 16);
         }
 
@@ -89,13 +93,15 @@ namespace _4RTools.Model
         private Utils.ProcessMemoryReader PMR { get; set; }
         public int currentNameAddress { get; set; }
         public int currentHPBaseAddress { get; set; }
+        public int currentWeightAddress { get; set; }
         private int statusBufferAddress { get; set; }
         private int _num = 0;
 
-        public Client(string processName, int currentHPBaseAddress, int currentNameAddress)
+        public Client(string processName, int currentHPBaseAddress, int currentNameAddress, int currentWeightAddress)
         {
             this.currentNameAddress = currentNameAddress;
             this.currentHPBaseAddress = currentHPBaseAddress;
+            this.currentWeightAddress = currentWeightAddress;
             this.processName = processName;
             this.statusBufferAddress = currentHPBaseAddress + 0x474;
         }
@@ -105,6 +111,7 @@ namespace _4RTools.Model
             this.processName = dto.name;
             this.currentHPBaseAddress = Convert.ToInt32(dto.hpAddress, 16);
             this.currentNameAddress = Convert.ToInt32(dto.nameAddress, 16);
+            this.currentWeightAddress = Convert.ToInt32(dto.weightAddress, 16);
             this.statusBufferAddress = this.currentHPBaseAddress + 0x474;
         }
 
@@ -129,12 +136,14 @@ namespace _4RTools.Model
                         if (c == null) throw new Exception();
 
                         this.currentHPBaseAddress = c.currentHPBaseAddress;
+                        this.currentWeightAddress = c.currentWeightAddress;
                         this.currentNameAddress = c.currentNameAddress;
                         this.statusBufferAddress = c.statusBufferAddress;
                     }catch
                     {
                         MessageBox.Show("This client is not supported. Only Spammers and macro will works.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         this.currentHPBaseAddress = 0;
+                        this.currentWeightAddress = 0;
                         this.currentNameAddress = 0;
                         this.statusBufferAddress = 0;
                     }
@@ -184,6 +193,11 @@ namespace _4RTools.Model
             return ReadCurrentSp() * 100 < percent * ReadMaxSp();
         }
 
+        public bool HasSpace(int value)
+        {
+            return ReadMaxWeight() - ReadCurrentWeight() > value;
+        }
+
         public uint ReadCurrentHp()
         {
             return ReadMemory(this.currentHPBaseAddress);
@@ -207,6 +221,16 @@ namespace _4RTools.Model
         public uint ReadMaxSp()
         {
             return ReadMemory(this.currentHPBaseAddress + 12);
+        }
+
+        public uint ReadCurrentWeight()
+        {
+            return ReadMemory(this.currentWeightAddress);
+        }
+
+        public uint ReadMaxWeight()
+        {
+            return ReadMemory(this.currentWeightAddress - 4);
         }
 
         public uint CurrentBuffStatusCode(int effectStatusIndex)
@@ -233,6 +257,7 @@ namespace _4RTools.Model
             return ClientListSingleton.GetAll()
                 .Where(c => c.processName == dto.name)
                 .Where(c => c.currentHPBaseAddress == dto.hpAddressPointer)
+                .Where(c => c.currentWeightAddress == dto.weightAddressPointer)
                 .Where(c => c.currentNameAddress == dto.nameAddressPointer).FirstOrDefault();
         }
     }

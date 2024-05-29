@@ -83,16 +83,20 @@ namespace _4RTools.Model
                 pot(this.spKey);
             }
 
+            Thread.Sleep(this.delay);
+
             if (roClient.IsHpBelow(hpPercent))
             {
-                // Use HP box
-                pot(this.hpBoxKey);
+                // Use HP box with 100 yggs
+                if (roClient.HasSpace(3000))
+                    pot(this.hpBoxKey);
             }
 
             if (roClient.IsSpBelow(spPercent))
             {
-                // Use SP box
-                pot(this.spBoxKey);
+                // Use SP box with 100 yggs
+                if (roClient.HasSpace(3000))
+                    pot(this.spBoxKey);
             }
 
             Thread.Sleep(this.delay);

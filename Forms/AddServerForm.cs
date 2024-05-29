@@ -62,6 +62,7 @@ namespace _4RTools.Forms
         {
             //Addresses start in position 2 (0x...)
             List<char> charsHP = dto.hpAddress.Replace("0x", "").ToCharArray().ToList();
+            List<char> charsWeight = dto.weightAddress.Replace("0x", "").ToCharArray().ToList();
             List<char> charsName = dto.nameAddress.Replace("0x", "").ToCharArray().ToList();
 
             txtHP1.Text = charsHP.ElementAtOrDefault(0).ToString();
@@ -73,6 +74,14 @@ namespace _4RTools.Forms
             txtHP7.Text = charsHP.ElementAtOrDefault(6).ToString();
             txtHP8.Text = charsHP.ElementAtOrDefault(7).ToString();
 
+            txtWeight1.Text = charsWeight.ElementAtOrDefault(0).ToString();
+            txtWeight2.Text = charsWeight.ElementAtOrDefault(1).ToString();
+            txtWeight3.Text = charsWeight.ElementAtOrDefault(2).ToString();
+            txtWeight4.Text = charsWeight.ElementAtOrDefault(3).ToString();
+            txtWeight5.Text = charsWeight.ElementAtOrDefault(4).ToString();
+            txtWeight6.Text = charsWeight.ElementAtOrDefault(5).ToString();
+            txtWeight7.Text = charsWeight.ElementAtOrDefault(6).ToString();
+            txtWeight8.Text = charsWeight.ElementAtOrDefault(7).ToString();
 
             txtName1.Text = charsName.ElementAtOrDefault(0).ToString();
             txtName2.Text = charsName.ElementAtOrDefault(1).ToString();
@@ -140,6 +149,7 @@ namespace _4RTools.Forms
         private void btnSave_Click(object sender, EventArgs e)
         {
             string hpAddress = string.Concat(txtHP1.Text, txtHP2.Text, txtHP3.Text, txtHP4.Text, txtHP5.Text, txtHP6.Text, txtHP7.Text, txtHP8.Text);
+            string weightAddress = string.Concat(txtWeight1.Text, txtWeight2.Text, txtWeight3.Text, txtWeight4.Text, txtWeight5.Text, txtWeight6.Text, txtWeight7.Text, txtWeight8.Text);
             string nameAddress = string.Concat(txtName1.Text, txtName2.Text, txtName3.Text, txtName4.Text, txtName5.Text, txtName6.Text, txtName7.Text, txtName8.Text);
             try
             {
@@ -147,14 +157,14 @@ namespace _4RTools.Forms
                 if(this.dto == null)
                 {
                     //Should create one
-                    LocalServerManager.AddServer(hpAddress, nameAddress, processCB.Text);
+                    LocalServerManager.AddServer(hpAddress, nameAddress, processCB.Text, weightAddress);
                     MessageBox.Show("Server " + processCB.Text + " successfully added !!", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
                     //Update Server
                     LocalServerManager.RemoveClient(dto);
-                    LocalServerManager.AddServer(hpAddress, nameAddress, processCB.Text);
+                    LocalServerManager.AddServer(hpAddress, nameAddress, processCB.Text, weightAddress);
                     MessageBox.Show("Server " + processCB.Text + " successfully saved !!", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 

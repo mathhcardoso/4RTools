@@ -344,7 +344,7 @@ namespace _4RTools.Model
             }
 
             // Answer is correct, but the game doesnt leave the player
-            if (plainText.Contains("Arquimago"))
+            if (plainText.Contains("Arquimag"))
             {
                 Relog();
             }
@@ -369,7 +369,8 @@ namespace _4RTools.Model
                         }
                         else if (char.IsSymbol(c))
                         {
-                            // TODO
+                            // TODO Botei * fixo
+                            PressKeyWithCtrlKey(Constants.VK_SHIFT, "D8");
                         }
                         else
                         {
