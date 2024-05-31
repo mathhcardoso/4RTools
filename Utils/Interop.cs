@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
@@ -26,5 +27,11 @@ namespace _4RTools.Utils
 
         [DllImport("user32.dll", EntryPoint = "GetSystemMetrics", CallingConvention = CallingConvention.Winapi)]
         internal static extern int InternalGetSystemMetrics(int value);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetWindowRect(IntPtr hWnd, out Rectangle lpRect);
     }
 }

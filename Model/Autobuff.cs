@@ -74,6 +74,15 @@ namespace _4RTools.Model
             Interop.mouse_event(Constants.MOUSEEVENTF_LEFTUP, new_x, new_y, 0, 0);
         }
 
+        private void Centralize_mouse()
+        {
+            Rectangle t2;
+            Interop.GetWindowRect(Interop.GetForegroundWindow(), out t2);
+            double mic_x = (double)t2.Right / 2;
+            double mic_y = (double)(t2.Bottom / 2) + 10;
+            Move_mouse((int)mic_x, (int)mic_y);
+        }
+
         private void PressKey(string key)
         {
             Interop.PostMessage(ClientSingleton.GetClient().process.MainWindowHandle, Constants.WM_KEYDOWN_MSG_ID, (Keys)Enum.Parse(typeof(Keys), key), 0);
@@ -207,6 +216,7 @@ namespace _4RTools.Model
             foreach (char number in code)
             {
                 PressKey("D" + number.ToString());
+                PressKey("D" + number.ToString());
                 Thread.Sleep(100);
             }
 
@@ -259,9 +269,9 @@ namespace _4RTools.Model
 
                 int tries = 0;
                 string keyStr = key.ToString();
-                Console.WriteLine(keyStr + ": " + Keyboard.IsKeyDown(key));
                 while (Keyboard.IsKeyDown(key))
                 {
+                    Console.WriteLine(keyStr + ": " + Keyboard.IsKeyDown(key));
                     if (tries == RELEASE_KEY_MAX_TRIES)
                     {
                         Console.WriteLine("Release " + keyStr + " failed");
@@ -283,6 +293,8 @@ namespace _4RTools.Model
 
         private void HandleAntiBot()
         {
+            Centralize_mouse();
+
             string dateNow = DateTime.Now.ToString("yyyy-MMMM-ddTHH-mm-ss");
             string today = DateTime.Now.ToString("yyyy-MMMM-dd");
             string imagesDir = "images";

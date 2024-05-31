@@ -83,8 +83,6 @@ namespace _4RTools.Model
                 pot(this.spKey);
             }
 
-            Thread.Sleep(this.delay);
-
             if (roClient.IsHpBelow(hpPercent))
             {
                 // Use HP box with 100 yggs
