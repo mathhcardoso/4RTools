@@ -74,6 +74,15 @@ namespace _4RTools.Model
             Interop.mouse_event(Constants.MOUSEEVENTF_LEFTUP, new_x, new_y, 0, 0);
         }
 
+        private void Centralize_mouse()
+        {
+            Rectangle t2;
+            Interop.GetWindowRect(Interop.GetForegroundWindow(), out t2);
+            double mic_x = (double)(t2.Right / 2) + 2;
+            double mic_y = (double)(t2.Bottom / 2) + 12;
+            Move_mouse((int)mic_x, (int)mic_y);
+        }
+
         private void PressKey(string key)
         {
             Interop.PostMessage(ClientSingleton.GetClient().process.MainWindowHandle, Constants.WM_KEYDOWN_MSG_ID, (Keys)Enum.Parse(typeof(Keys), key), 0);
