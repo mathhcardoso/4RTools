@@ -216,7 +216,6 @@ namespace _4RTools.Model
             foreach (char number in code)
             {
                 PressKey("D" + number.ToString());
-                PressKey("D" + number.ToString());
                 Thread.Sleep(100);
             }
 
