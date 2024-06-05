@@ -168,6 +168,8 @@ namespace _4RTools.Model
                 PressKey("E");
                 Thread.Sleep(200);
 
+                CentralizeMouse();
+
                 // Right Click
                 for (int i = 0; i < 10; i++)
                 {
