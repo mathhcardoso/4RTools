@@ -53,34 +53,34 @@ namespace _4RTools.Model
             return Bmp;
         }
 
-        private Tuple<int, int> Move_mouse(int to_x, int to_y)
+        private Tuple<int, int> MoveMouse(int x, int y)
         {
             int screenWidth = Interop.InternalGetSystemMetrics(0);
             int screenHeight = Interop.InternalGetSystemMetrics(1);
 
-            int mic_x = (int)Math.Round(to_x * 65536.0 / screenWidth);
-            int mic_y = (int)Math.Round(to_y * 65536.0 / screenHeight);
+            int newX = (int)Math.Round(x * 65536.0 / screenWidth);
+            int newY = (int)Math.Round(y * 65536.0 / screenHeight);
 
-            Interop.mouse_event(Constants.KEYEVENTF_EXTENDEDKEY | Constants.MOUSEEVENTF_ABSOLUTE, mic_x, mic_y, 0, 0);
-            return new Tuple<int, int>(mic_x, mic_y);
+            Interop.mouse_event(Constants.KEYEVENTF_EXTENDEDKEY | Constants.MOUSEEVENTF_ABSOLUTE, newX, newY, 0, 0);
+            return new Tuple<int, int>(newX, newY);
         }
 
-        private void Click_mouse(int x, int y)
+        private void ClickMouse(int x, int y)
         {
-            (int new_x, int new_y) = Move_mouse(x, y);
+            (int newX, int newY) = MoveMouse(x, y);
             Thread.Sleep(100);
-            Interop.mouse_event(Constants.MOUSEEVENTF_LEFTDOWN, new_x, new_y, 0, 0);
+            Interop.mouse_event(Constants.MOUSEEVENTF_LEFTDOWN, newX, newY, 0, 0);
             Thread.Sleep(1);
-            Interop.mouse_event(Constants.MOUSEEVENTF_LEFTUP, new_x, new_y, 0, 0);
+            Interop.mouse_event(Constants.MOUSEEVENTF_LEFTUP, newX, newY, 0, 0);
         }
 
-        private void Centralize_mouse()
+        private void CentralizeMouse()
         {
-            Rectangle t2;
-            Interop.GetWindowRect(Interop.GetForegroundWindow(), out t2);
-            double mic_x = (double)(t2.Right / 2) + 2;
-            double mic_y = (double)(t2.Bottom / 2) + 12;
-            Move_mouse((int)mic_x, (int)mic_y);
+            Rectangle r;
+            Interop.GetWindowRect(Interop.GetForegroundWindow(), out r);
+            double x = (double)(r.Right / 2) + 2;
+            double y = (double)(r.Bottom / 2) + 12;
+            MoveMouse((int)x, (int)y);
         }
 
         private void PressKey(string key)
@@ -114,12 +114,12 @@ namespace _4RTools.Model
             PressKey("Escape");
 
             Point cursorPos = System.Windows.Forms.Cursor.Position;
-            int to_x = cursorPos.X;
-            int to_y = cursorPos.Y + optionPosDiff;
+            int toX = cursorPos.X;
+            int toY = cursorPos.Y + optionPosDiff;
             Thread.Sleep(8000);
             
             // Click on "Select Character" option
-            Click_mouse(to_x, to_y);
+            ClickMouse(toX, toY);
 
             Thread.Sleep(2000);
 
@@ -128,7 +128,7 @@ namespace _4RTools.Model
             Thread.Sleep(2000);
 
             // Move mouse to original position
-            Click_mouse(to_x, to_y - optionPosDiff);
+            ClickMouse(toX, toY - optionPosDiff);
         }
 
         private void CreateDirectory(string path)
@@ -292,7 +292,7 @@ namespace _4RTools.Model
 
         private void HandleAntiBot()
         {
-            Centralize_mouse();
+            CentralizeMouse();
 
             string dateNow = DateTime.Now.ToString("yyyy-MMMM-ddTHH-mm-ss");
             string today = DateTime.Now.ToString("yyyy-MMMM-dd");
@@ -307,7 +307,7 @@ namespace _4RTools.Model
 
             // To release mouse button
             Point cursorPos = System.Windows.Forms.Cursor.Position;
-            Click_mouse(cursorPos.X, cursorPos.Y);
+            ClickMouse(cursorPos.X, cursorPos.Y);
 
             CreateDirectory(imagesDir);
             CreateDirectory(logsDir);
