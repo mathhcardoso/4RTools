@@ -91,6 +91,8 @@ namespace _4RTools.Model
         private void ReleaseKey(string key)
         {
             Interop.PostMessage(ClientSingleton.GetClient().process.MainWindowHandle, Constants.WM_KEYUP_MSG_ID, (Keys)Enum.Parse(typeof(Keys), key), 0);
+
+            Interop.keybd_event((byte)(Keys)Enum.Parse(typeof(Keys), key), 0, Constants.KEYEVENTF_KEYUP, 0);
         }
 
         private void PressKeyWithCtrlKey(byte ctlrKey, string key)
