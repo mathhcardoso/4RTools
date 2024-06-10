@@ -346,7 +346,17 @@ namespace _4RTools.Model
 
             // Extract text from saved image
             string plainText = ExtractTextFromImage(imagePath);
-            string code = plainText.Split(':').Last().Trim();
+            string[] text = plainText.Split(new string[] {"\n"}, StringSplitOptions.None);
+            string code = "";
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (text[i].Contains(":"))
+                {
+                    code = text[i];
+                    break;
+                }
+            }
             int lenCode = code.Length;
             string justNumbers = new String(code.Where(Char.IsDigit).ToArray());
             int lenJustNumbers = justNumbers.Length;
